@@ -1,7 +1,9 @@
 .listItemWr {
 	min-height: calc(100vh - 136px);
 	max-height: calc(100vh - 136px);
+	// position: absolute;
 	overflow-y: scroll;
+	overflow-x: visible;
 	&::-webkit-scrollbar {
 		width: 10px;
 		border-radius: 4px;
@@ -21,6 +23,31 @@
 		/* Handle on hover */
 		&::-webkit-scrollbar-thumb {
 			background: rgba(136, 136, 136, 0.693);
+		}
+	}
+	&NoOf {
+		min-height: calc(100vh - 136px);
+		max-height: calc(100vh - 136px);
+		&::-webkit-scrollbar {
+			width: 10px;
+			border-radius: 4px;
+		}
+
+		/* Track */
+		&::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0);
+		}
+
+		/* Handle */
+		&::-webkit-scrollbar-thumb {
+			background: rgba(136, 136, 136, 0);
+			border-radius: 4px;
+		}
+		&:hover {
+			/* Handle on hover */
+			&::-webkit-scrollbar-thumb {
+				background: rgba(136, 136, 136, 0.693);
+			}
 		}
 	}
 }

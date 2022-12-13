@@ -6,6 +6,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
@@ -58,16 +59,12 @@ export default function NestedList() {
 			component='nav'
 			classes={{ nav: 'sideNav' }}
 			aria-labelledby='nested-list-subheader'
-			subheader={
-				<ListSubheader component='div' id='nested-list-subheader'>
-					Danh sách
-				</ListSubheader>
-			}
 		>
 			<ListItemButton
 				onClick={() => {
 					handleClick('popular');
 				}}
+				sx={{ marginBottom: 1 }}
 			>
 				<ListItemIcon>
 					<StarBorder />
@@ -78,7 +75,7 @@ export default function NestedList() {
 			<Collapse in={open === 'popular'} timeout='auto' unmountOnExit>
 				<Grid container spacing={{ xs: 1, md: 1 }}>
 					{itemData.map(o => (
-						<Grid key={o.title} item lg={6}>
+						<Grid key={o.title} item xs={6} sm={6}>
 							<ItemBlock item={o} />
 						</Grid>
 					))}
@@ -89,6 +86,7 @@ export default function NestedList() {
 				onClick={() => {
 					handleClick('main-door');
 				}}
+				sx={{ marginBottom: 1 }}
 			>
 				<ListItemIcon>
 					<StarBorder />
@@ -99,7 +97,7 @@ export default function NestedList() {
 			<Collapse in={open === 'main-door'} timeout='auto' unmountOnExit>
 				<Grid container spacing={{ xs: 1, md: 1 }}>
 					{itemData.map(o => (
-						<Grid key={o.title} item lg={6}>
+						<Grid key={o.title} item xs={6} sm={6}>
 							<ItemBlock item={o} />
 						</Grid>
 					))}
@@ -110,6 +108,7 @@ export default function NestedList() {
 				onClick={() => {
 					handleClick('window');
 				}}
+				sx={{ marginBottom: 1 }}
 			>
 				<ListItemIcon>
 					<StarBorder />
@@ -120,12 +119,47 @@ export default function NestedList() {
 			<Collapse in={open === 'window'} timeout='auto' unmountOnExit>
 				<Grid container spacing={{ xs: 1, md: 1 }}>
 					{itemData.map(o => (
-						<Grid key={o.title} item lg={6}>
+						<Grid key={o.title} item xs={6} sm={6}>
 							<ItemBlock item={o} />
 						</Grid>
 					))}
 				</Grid>
 			</Collapse>
+
+			<ListItemButton
+				onClick={() => {
+					handleClick('side-door');
+				}}
+				sx={{ marginBottom: 1 }}
+			>
+				<ListItemIcon>
+					<StarBorder />
+				</ListItemIcon>
+				<ListItemText primary='Vách' />
+				{open === 'side-door' ? <ExpandLess /> : <ExpandMore />}
+			</ListItemButton>
+			<Collapse in={open === 'side-door'} timeout='auto' unmountOnExit>
+				<Grid container spacing={{ xs: 1, md: 1 }}>
+					{itemData.map(o => (
+						<Grid key={o.title} item xs={6} sm={6}>
+							<ItemBlock item={o} />
+						</Grid>
+					))}
+				</Grid>
+			</Collapse>
+			<Typography
+				variant='subtitle1'
+				noWrap
+				component='p'
+				sx={{
+					textAlign: 'center',
+					color: 'secondary',
+					textDecoration: 'underline',
+					cursor: 'pointer',
+				}}
+			>
+				Xem toàn bộ
+			</Typography>
 		</List>
 	);
 }
