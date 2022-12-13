@@ -1,0 +1,20 @@
+@media only screen and (min-width: 768px) {
+	.navigateLink {
+		text-decoration: none;
+		color: white !important;
+		padding: 10px 24px;
+		&Dropdown {
+			// min-width: 115px;
+			color: #222 !important;
+			text-decoration: none;
+			padding: 6px 18px;
+			&Active {
+				color: #1976d2 !important;
+			}
+		}
+	}
+
+	.activeNavLink {
+		border-bottom: 1px solid #fff;
+	}
+}
