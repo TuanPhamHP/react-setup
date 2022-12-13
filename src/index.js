@@ -111,17 +111,26 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = createTheme({
 	palette: {
+		black: '#000000',
+		dark: {
+			main: '#222222',
+		},
 		primary: {
 			main: '#1976D2',
-
+			contrastText: '#ffffff',
 			white: '#ffffff',
-			black: '#000',
+			black: '#000000',
+		},
+		pagination: {
+			main: '#222222',
+
+			contrastText: '#ffffff',
 		},
 		secondary: {
 			main: '#1976D2',
 		},
 		text: {
-			primary: '#1976D2',
+			primary: '#222222',
 			white: '#ffffff',
 			black: '#000',
 		},
@@ -130,6 +139,9 @@ const theme = createTheme({
 			success: '#3AC430',
 			info: '#0569FF',
 			warning: '#FE9705',
+		},
+		buttonCancel: {
+			main: '#D11313',
 		},
 	},
 });

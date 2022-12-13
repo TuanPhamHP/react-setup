@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import './assets/styles/App.scss';
 
 import { useSnackbar } from 'notistack';
 import Header from './components/Header';
