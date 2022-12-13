@@ -36,7 +36,7 @@ export default function ConstructionsList() {
 			<CreateNewConstruction openDialogCreate={openDialogCreate} setOpenDialogCreate={setOpenDialogCreate} />
 			<div className='page-filter'>
 				<Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 12, md: 12 }}>
-					<Grid item xs={8} md={4}>
+					<Grid item={true} xs={8} md={4}>
 						<div className='d-flex' style={{ gap: '10px' }}>
 							<TextField
 								placeholder='Tìm kiếm'
@@ -66,7 +66,7 @@ export default function ConstructionsList() {
 							</Button>
 						</div>
 					</Grid>
-					<Grid item xs={2} md={1} ml={'auto'}>
+					<Grid item={true} xs={2} md={1} ml={'auto'}>
 						<Button
 							variant='contained'
 							sx={{

@@ -140,6 +140,9 @@ const theme = createTheme({
 			info: '#0569FF',
 			warning: '#FE9705',
 		},
+		background: {
+			white: '#fff',
+		},
 		buttonCancel: {
 			main: '#D11313',
 		},

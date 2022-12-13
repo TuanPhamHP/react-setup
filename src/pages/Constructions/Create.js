@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import Grid from '@mui/system/Unstable_Grid/Grid';
+import Grid from '@mui/material/Grid';
+import ListItemPreview from '../../components/Constructions/ListItemPreview';
+
+import styles from '../../assets/styles/ConstructPage.module.scss';
 export default function ConstructionsList() {
 	return (
 		<div className='page-container'>
@@ -8,7 +11,11 @@ export default function ConstructionsList() {
 			</div>
 
 			<Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 12, md: 12 }}>
-				<Grid item xs={6} md={4} lg={3}></Grid>
+				<Grid item={true} xs={6} md={4} lg={3}>
+					<div className={styles.listItemWr}>
+						<ListItemPreview />
+					</div>
+				</Grid>
 			</Grid>
 		</div>
 	);
