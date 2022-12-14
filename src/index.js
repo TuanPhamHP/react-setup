@@ -156,9 +156,10 @@ root.render(
 	<Provider store={store}>
 		<ThemeProvider theme={theme}>
 			<SnackbarProvider maxSnack={3} autoHideDuration={4000}>
-				<React.StrictMode>
-					<App />
-				</React.StrictMode>
+				{/* <React.StrictMode>
+			
+				</React.StrictMode> */}
+				<App />
 			</SnackbarProvider>
 		</ThemeProvider>
 	</Provider>

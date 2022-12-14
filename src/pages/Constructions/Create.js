@@ -36,6 +36,7 @@ export default function ConstructionsList() {
 	const dragLocal = useSelector(selectDragLocal);
 	const [isEdit, setIsEdit] = useState([]);
 	const [agType, setAgType] = useState(null);
+	const [onCreateProcess, setOnCreateProcess] = useState(false);
 	const [rows, setRows] = useState([
 		createData('United States', 'US', 327167434, 9833520),
 		createData('Canada', 'CA', 37602103, 9984670),
@@ -85,10 +86,10 @@ export default function ConstructionsList() {
 		setRows([...rows, newRow]);
 		dispatch(setDroppedItem(null));
 	};
+	function handleOpenCreateNewDoorSet() {
+		setOnCreateProcess(true);
+	}
 
-	useEffect(() => {
-		getMaxHeightBottom();
-	});
 	useEffect(() => {
 		console.log(dragLocal.droppedItem);
 		handleAddNewDroppedItem(dragLocal.droppedItem);
@@ -122,346 +123,349 @@ export default function ConstructionsList() {
 						maxHeight: `calc(100vh - 115px)`,
 					}}
 				>
-					<Grid
-						className={`box-shadow-m1 grid-reset-margin ${styles.constructionsFormTop} constructionsTopGrid`}
-						container
-						sx={{ padding: '12px', marginBottom: 2 }}
-						columns={{ xs: 12, sm: 12, md: 12 }}
-					>
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
-							<div className='d-flex flex-column'>
-								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Tên dự án:</p>
-								<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
-									<Input
-										type='text'
-										placeholder='Tên dự án'
-										readOnly={!isEdit.includes('name')}
-										fullWidth={true}
-										endAdornment={
-											<InputAdornment position='end'>
-												{isEdit.includes('name') ? (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickCancel('name');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<ClearIcon />
-													</IconButton>
-												) : (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickEdit('name');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<EditIcon />
-													</IconButton>
-												)}
-											</InputAdornment>
-										}
+					{onCreateProcess ? (
+						<></>
+					) : (
+						<Grid
+							className={`box-shadow-m1 grid-reset-margin ${styles.constructionsFormTop} constructionsTopGrid`}
+							container
+							sx={{ padding: '12px', marginBottom: 2 }}
+							columns={{ xs: 12, sm: 12, md: 12 }}
+						>
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
+								<div className='d-flex flex-column'>
+									<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Tên dự án:</p>
+									<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
+										<Input
+											type='text'
+											placeholder='Tên dự án'
+											readOnly={!isEdit.includes('name')}
+											fullWidth={true}
+											endAdornment={
+												<InputAdornment position='end'>
+													{isEdit.includes('name') ? (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickCancel('name');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<ClearIcon />
+														</IconButton>
+													) : (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickEdit('name');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<EditIcon />
+														</IconButton>
+													)}
+												</InputAdornment>
+											}
+										/>
+									</FormControl>
+								</div>
+							</Grid>
+
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
+								<div className='d-flex flex-column'>
+									<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Số điện thoại:</p>
+									<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
+										<Input
+											type='text'
+											placeholder='Số điện thoại'
+											fullWidth={true}
+											readOnly={!isEdit.includes('phone')}
+											endAdornment={
+												<InputAdornment position='end'>
+													{isEdit.includes('phone') ? (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickCancel('phone');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<ClearIcon />
+														</IconButton>
+													) : (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickEdit('phone');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<EditIcon />
+														</IconButton>
+													)}
+												</InputAdornment>
+											}
+										/>
+									</FormControl>
+								</div>
+							</Grid>
+
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
+								<div className='d-flex  flex-column'>
+									<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Địa chỉ:</p>
+									<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
+										<Input
+											type='text'
+											placeholder='Địa chỉ'
+											fullWidth={true}
+											readOnly={!isEdit.includes('address')}
+											endAdornment={
+												<InputAdornment position='end'>
+													{isEdit.includes('address') ? (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickCancel('address');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<ClearIcon />
+														</IconButton>
+													) : (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickEdit('address');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<EditIcon />
+														</IconButton>
+													)}
+												</InputAdornment>
+											}
+										/>
+									</FormControl>
+								</div>
+							</Grid>
+
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
+								<div className='d-flex  flex-column'>
+									<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Loại nhôm:</p>
+									<Autocomplete
+										{...defaultProps}
+										onChange={changeAgType}
+										disableClearable
+										value={agType}
+										isOptionEqualToValue={(option, value) => option.title === value.title}
+										renderInput={params => <TextField {...params} placeholder='Loại nhôm' variant='standard' />}
 									/>
-								</FormControl>
-							</div>
-						</Grid>
+								</div>
+							</Grid>
 
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
-							<div className='d-flex flex-column'>
-								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Số điện thoại:</p>
-								<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
-									<Input
-										type='text'
-										placeholder='Số điện thoại'
-										fullWidth={true}
-										readOnly={!isEdit.includes('phone')}
-										endAdornment={
-											<InputAdornment position='end'>
-												{isEdit.includes('phone') ? (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickCancel('phone');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<ClearIcon />
-													</IconButton>
-												) : (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickEdit('phone');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<EditIcon />
-													</IconButton>
-												)}
-											</InputAdornment>
-										}
-									/>
-								</FormControl>
-							</div>
-						</Grid>
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
+								<div className='d-flex  flex-column'>
+									<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Tổng diện tích:</p>
+									<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
+										<Input
+											type='text'
+											placeholder='Tổng diện tích'
+											fullWidth={true}
+											readOnly={!isEdit.includes('totalSquare')}
+											endAdornment={
+												<InputAdornment position='end'>
+													{isEdit.includes('totalSquare') ? (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickCancel('totalSquare');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<ClearIcon />
+														</IconButton>
+													) : (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickEdit('totalSquare');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<EditIcon />
+														</IconButton>
+													)}
+												</InputAdornment>
+											}
+										/>
+									</FormControl>
+								</div>
+							</Grid>
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1, display: { xs: 'none', md: 'block' } }}></Grid>
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
+								<div className='d-flex  flex-column'>
+									<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Số bộ cửa:</p>
+									<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
+										<Input
+											type='text'
+											placeholder='Số bộ cửa'
+											fullWidth={true}
+											readOnly={!isEdit.includes('noOfDoor')}
+											endAdornment={
+												<InputAdornment position='end'>
+													{isEdit.includes('noOfDoor') ? (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickCancel('noOfDoor');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<ClearIcon />
+														</IconButton>
+													) : (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickEdit('noOfDoor');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<EditIcon />
+														</IconButton>
+													)}
+												</InputAdornment>
+											}
+										/>
+									</FormControl>
+								</div>
+							</Grid>
 
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
-							<div className='d-flex  flex-column'>
-								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Địa chỉ:</p>
-								<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
-									<Input
-										type='text'
-										placeholder='Địa chỉ'
-										fullWidth={true}
-										readOnly={!isEdit.includes('address')}
-										endAdornment={
-											<InputAdornment position='end'>
-												{isEdit.includes('address') ? (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickCancel('address');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<ClearIcon />
-													</IconButton>
-												) : (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickEdit('address');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<EditIcon />
-													</IconButton>
-												)}
-											</InputAdornment>
-										}
-									/>
-								</FormControl>
-							</div>
-						</Grid>
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
+								<div className='d-flex  flex-column'>
+									<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Ngày tạo</p>
+									<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
+										<Input type='text' placeholder='Ngày tạo' fullWidth={true} readOnly={true} />
+									</FormControl>
+								</div>
+							</Grid>
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1, display: { xs: 'none', md: 'block' } }}></Grid>
 
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
-							<div className='d-flex  flex-column'>
-								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Loại nhôm:</p>
-								<Autocomplete
-									{...defaultProps}
-									onChange={changeAgType}
-									disableClearable
-									value={agType}
-									isOptionEqualToValue={(option, value) => option.title === value.title}
-									renderInput={params => <TextField {...params} placeholder='Loại nhôm' variant='standard' />}
-								/>
-							</div>
-						</Grid>
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
+								<div className='d-flex  flex-column'>
+									<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Giá bán</p>
+									<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
+										<Input
+											type='text'
+											placeholder='Giá bán'
+											fullWidth={true}
+											readOnly={!isEdit.includes('salePrice')}
+											endAdornment={
+												<InputAdornment position='end'>
+													{isEdit.includes('salePrice') ? (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickCancel('salePrice');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<ClearIcon />
+														</IconButton>
+													) : (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickEdit('salePrice');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<EditIcon />
+														</IconButton>
+													)}
+												</InputAdornment>
+											}
+										/>
+									</FormControl>
+								</div>
+							</Grid>
 
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
-							<div className='d-flex  flex-column'>
-								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Tổng diện tích:</p>
-								<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
-									<Input
-										type='text'
-										placeholder='Tổng diện tích'
-										fullWidth={true}
-										readOnly={!isEdit.includes('totalSquare')}
-										endAdornment={
-											<InputAdornment position='end'>
-												{isEdit.includes('totalSquare') ? (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickCancel('totalSquare');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<ClearIcon />
-													</IconButton>
-												) : (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickEdit('totalSquare');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<EditIcon />
-													</IconButton>
-												)}
-											</InputAdornment>
-										}
-									/>
-								</FormControl>
-							</div>
-						</Grid>
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1, display: { xs: 'none', md: 'block' } }}></Grid>
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
-							<div className='d-flex  flex-column'>
-								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Số bộ cửa:</p>
-								<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
-									<Input
-										type='text'
-										placeholder='Số bộ cửa'
-										fullWidth={true}
-										readOnly={!isEdit.includes('noOfDoor')}
-										endAdornment={
-											<InputAdornment position='end'>
-												{isEdit.includes('noOfDoor') ? (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickCancel('noOfDoor');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<ClearIcon />
-													</IconButton>
-												) : (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickEdit('noOfDoor');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<EditIcon />
-													</IconButton>
-												)}
-											</InputAdornment>
-										}
-									/>
-								</FormControl>
-							</div>
-						</Grid>
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
+								<div className='d-flex  flex-column'>
+									<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Chiết khấu</p>
+									<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
+										<Input
+											type='text'
+											placeholder='Chiết khấu'
+											fullWidth={true}
+											readOnly={!isEdit.includes('discount')}
+											endAdornment={
+												<InputAdornment position='end'>
+													{isEdit.includes('discount') ? (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickCancel('discount');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<ClearIcon />
+														</IconButton>
+													) : (
+														<IconButton
+															aria-label='toggle edit visibility'
+															onClick={() => {
+																handleClickEdit('discount');
+															}}
+															onMouseDown={handleMouseDownPassword}
+															edge='end'
+														>
+															<EditIcon />
+														</IconButton>
+													)}
+												</InputAdornment>
+											}
+										/>
+									</FormControl>
+								</div>
+							</Grid>
 
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
-							<div className='d-flex  flex-column'>
-								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Ngày tạo</p>
-								<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
-									<Input type='text' placeholder='Ngày tạo' fullWidth={true} readOnly={true} />
-								</FormControl>
-							</div>
+							<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
+								<div className='d-flex  flex-column'>
+									<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Giá cuối</p>
+									<Button
+										variant='contained'
+										className='no-box-shadow'
+										sx={{
+											display: 'block',
+
+											whiteSpace: 'nowrap',
+											textTransform: 'none',
+										}}
+									>
+										Xuất báo giá
+									</Button>
+								</div>
+							</Grid>
 						</Grid>
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1, display: { xs: 'none', md: 'block' } }}></Grid>
-
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
-							<div className='d-flex  flex-column'>
-								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Giá bán</p>
-								<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
-									<Input
-										type='text'
-										placeholder='Giá bán'
-										fullWidth={true}
-										readOnly={!isEdit.includes('salePrice')}
-										endAdornment={
-											<InputAdornment position='end'>
-												{isEdit.includes('salePrice') ? (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickCancel('salePrice');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<ClearIcon />
-													</IconButton>
-												) : (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickEdit('salePrice');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<EditIcon />
-													</IconButton>
-												)}
-											</InputAdornment>
-										}
-									/>
-								</FormControl>
-							</div>
-						</Grid>
-
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
-							<div className='d-flex  flex-column'>
-								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Chiết khấu</p>
-								<FormControl fullWidth={true} sx={{ m: 0, p: 0 }} variant='filled'>
-									<Input
-										type='text'
-										placeholder='Chiết khấu'
-										fullWidth={true}
-										readOnly={!isEdit.includes('discount')}
-										endAdornment={
-											<InputAdornment position='end'>
-												{isEdit.includes('discount') ? (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickCancel('discount');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<ClearIcon />
-													</IconButton>
-												) : (
-													<IconButton
-														aria-label='toggle edit visibility'
-														onClick={() => {
-															handleClickEdit('discount');
-														}}
-														onMouseDown={handleMouseDownPassword}
-														edge='end'
-													>
-														<EditIcon />
-													</IconButton>
-												)}
-											</InputAdornment>
-										}
-									/>
-								</FormControl>
-							</div>
-						</Grid>
-
-						<Grid item={true} xs={12} sm={6} md={4} sx={{ padding: 1 }}>
-							<div className='d-flex  flex-column'>
-								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Giá cuối</p>
-								<Button
-									variant='contained'
-									className='no-box-shadow'
-									sx={{
-										display: 'block',
-
-										whiteSpace: 'nowrap',
-										textTransform: 'none',
-									}}
-								>
-									Xuất báo giá
-								</Button>
-							</div>
-						</Grid>
-					</Grid>
-
+					)}
 					<div
 						className={`box-shadow-m1 ${styles.constructionsFormBottom} mod-webkit-scroll-m1`}
 						id='resultPos'
-						style={{ padding: '20px', height: '100%', maxHeight: maxHeightBottom }}
+						style={{ padding: '20px', height: '100%', maxHeight: 'auto' }}
 					>
 						{dragLocal.itemSidebarOndrag ? (
 							<div className={styles.dropBox}>
@@ -482,6 +486,7 @@ export default function ConstructionsList() {
 								whiteSpace: 'nowrap',
 								textTransform: 'none',
 							}}
+							onClick={handleOpenCreateNewDoorSet}
 						>
 							Thêm
 						</Button>

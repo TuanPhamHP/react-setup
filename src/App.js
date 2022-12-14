@@ -25,7 +25,7 @@ import Supplies from './pages/Supplies';
 import Login from './pages/Loggin';
 import Error from './pages/Error';
 import NoMatch from './pages/NoMatch';
-import { BrowserRouter as Router, Route, Routes, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 // helpers
 import { getCookie } from './helpers/customizeCookie';
@@ -38,10 +38,11 @@ import { useEffect } from 'react';
 function App() {
 	const authUser = useSelector(selectUser);
 
-	const ProtectedRoute = ({ redirectPath = '/login', children }) => {
+	const ProtectedRoute = ({ expectedPath, redirectPath = '/login', children }) => {
 		const currentToken = getCookie('token', true);
 		const dispatch = useDispatch();
 		const navigate = useNavigate();
+		const location = useLocation();
 
 		const getUser = async token => {
 			const res = await api.user.getUserInfo(token);
@@ -58,7 +59,7 @@ function App() {
 					};
 					dispatch(setUser(fakeResult));
 					dispatch(setToken(fakeResult.token));
-					navigate('/cong-trinh');
+					navigate(location.pathname || '/cong-trinh');
 					return;
 				}
 				navigate(redirectPath);
@@ -92,7 +93,7 @@ function App() {
 					dispatch(setUser(fakeResult));
 					dispatch(setToken(fakeResult.token));
 
-					navigate('/cong-trinh');
+					navigate(location.pathname || '/cong-trinh');
 					return;
 				}
 				navigate(redirectPath);
@@ -147,14 +148,30 @@ function App() {
 						<Route
 							path='/cong-trinh/them-moi'
 							element={
-								<ProtectedRoute>
+								<ProtectedRoute expectedPath='/cong-trinh/them-moi'>
 									<ConstructionsCreate />
 								</ProtectedRoute>
 							}
 							errorElement=<Error />
 						/>
-						<Route path='/cong-trinh/:id' element={<ConstructionsDetail />} errorElement=<Error /> />
-						<Route path='/mau-cua' element={<DoorModels />} errorElement=<Error /> />
+						<Route
+							path='/cong-trinh/:id'
+							element={
+								<ProtectedRoute expectedPath='/cong-trinh/:id'>
+									<ConstructionsDetail />
+								</ProtectedRoute>
+							}
+							errorElement=<Error />
+						/>
+						<Route
+							path='/mau-cua'
+							element={
+								<ProtectedRoute expectedPath='/mau-cua'>
+									<DoorModels />
+								</ProtectedRoute>
+							}
+							errorElement=<Error />
+						/>
 						<Route path='/vat-tu' element={<Supplies />} errorElement=<Error /> />
 						<Route
 							path='/home'
