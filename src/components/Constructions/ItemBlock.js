@@ -1,19 +1,25 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import styles from '../../assets/styles/ConstructItem.module.scss';
 import { useDispatch } from 'react-redux';
-import { setItemSidebarDrag } from '../../store/dragLocal';
+import { setItemSidebarDrag, setDroppedItem } from '../../store/dragLocal';
 
 export default function ItemData(props) {
-	const [originPosition, setOriginPosition] = React.useState(null);
-	const [desPosition, setDesPosition] = React.useState(null);
+	const [target, setTarget] = useState(null);
+	const [originPosition, setOriginPosition] = useState(null);
+	const [desPosition, setDesPosition] = useState(null);
 	const dispatch = useDispatch();
 	const eventLogger = (e, data) => {
 		console.log('Event: ', e);
 		console.log('Data: ', data);
 	};
+	useEffect(() => {
+		const target = document.querySelector('#resultPos');
+		setTarget(target);
+	});
+
 	const startDrag = (e, data) => {
 		dispatch(setItemSidebarDrag(true));
 		// console.log('start');
@@ -25,13 +31,12 @@ export default function ItemData(props) {
 		setOriginPosition(obj);
 	};
 	const onDrag = (e, data) => {
+		if (target) {
+		}
 		// console.log('on');
 	};
 	const stopDrag = (e, data) => {
-		// console.log('stop');
 		dispatch(setItemSidebarDrag(false));
-		console.log(e);
-		const target = document.querySelector('#resultPos');
 		if (target) {
 			const rect = target.getBoundingClientRect();
 			const width = target.clientWidth;
@@ -44,6 +49,7 @@ export default function ItemData(props) {
 			const validY = e.clientY >= startRY && e.clientY <= endRY;
 			if (validX && validY) {
 				console.log(props.item);
+				dispatch(setDroppedItem(props.item));
 			}
 		}
 
@@ -58,6 +64,7 @@ export default function ItemData(props) {
 			position={desPosition}
 			grid={[30, 30]}
 			scale={1}
+			onDrag={onDrag}
 			onStart={startDrag}
 			onStop={stopDrag}
 		>

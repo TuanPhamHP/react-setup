@@ -75,7 +75,15 @@ export default function NestedList() {
 			<Collapse in={open === 'popular'} timeout='auto' unmountOnExit>
 				<Grid container spacing={{ xs: 1, md: 1 }}>
 					{itemData.map(o => (
-						<Grid key={o.title} item xs={6} sm={6}>
+						<Grid
+							key={o.title}
+							item
+							xs={6}
+							sm={6}
+							sx={{
+								zIndex: 5,
+							}}
+						>
 							<ItemBlock item={o} />
 						</Grid>
 					))}
@@ -97,7 +105,15 @@ export default function NestedList() {
 			<Collapse in={open === 'main-door'} timeout='auto' unmountOnExit>
 				<Grid container spacing={{ xs: 1, md: 1 }}>
 					{itemData.map(o => (
-						<Grid key={o.title} item xs={6} sm={6}>
+						<Grid
+							key={o.title}
+							item
+							xs={6}
+							sm={6}
+							sx={{
+								zIndex: 5,
+							}}
+						>
 							<ItemBlock item={o} />
 						</Grid>
 					))}
@@ -119,7 +135,15 @@ export default function NestedList() {
 			<Collapse in={open === 'window'} timeout='auto' unmountOnExit>
 				<Grid container spacing={{ xs: 1, md: 1 }}>
 					{itemData.map(o => (
-						<Grid key={o.title} item xs={6} sm={6}>
+						<Grid
+							key={o.title}
+							item
+							xs={6}
+							sm={6}
+							sx={{
+								zIndex: 5,
+							}}
+						>
 							<ItemBlock item={o} />
 						</Grid>
 					))}
@@ -139,7 +163,13 @@ export default function NestedList() {
 				{open === 'side-door' ? <ExpandLess /> : <ExpandMore />}
 			</ListItemButton>
 			<Collapse in={open === 'side-door'} timeout='auto' unmountOnExit>
-				<Grid container spacing={{ xs: 1, md: 1 }}>
+				<Grid
+					container
+					spacing={{ xs: 1, md: 1 }}
+					sx={{
+						zIndex: 5,
+					}}
+				>
 					{itemData.map(o => (
 						<Grid key={o.title} item xs={6} sm={6}>
 							<ItemBlock item={o} />

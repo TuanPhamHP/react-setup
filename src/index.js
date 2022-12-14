@@ -115,8 +115,12 @@ const theme = createTheme({
 		dark: {
 			main: '#222222',
 		},
+		grey: {
+			main: '#ebebeb',
+		},
 		primary: {
 			main: '#1976D2',
+			mainLight2: '#1976d242',
 			contrastText: '#ffffff',
 			white: '#ffffff',
 			black: '#000000',
@@ -152,7 +156,9 @@ root.render(
 	<Provider store={store}>
 		<ThemeProvider theme={theme}>
 			<SnackbarProvider maxSnack={3} autoHideDuration={4000}>
-				<App />
+				<React.StrictMode>
+					<App />
+				</React.StrictMode>
 			</SnackbarProvider>
 		</ThemeProvider>
 	</Provider>

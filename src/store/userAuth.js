@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { jsonCopy } from '../helpers/FormatnParse';
+import { deleteCookie } from '../helpers/customizeCookie';
 
 export const userAuthSlice = createSlice({
 	name: 'userAuth',
@@ -14,9 +15,14 @@ export const userAuthSlice = createSlice({
 		setToken: (state, action) => {
 			state.user = action.payload ? jsonCopy(action.payload) : '';
 		},
+		logOut: state => {
+			state.user = null;
+			state.token = '';
+			deleteCookie('token');
+		},
 	},
 });
-export const { setUser } = userAuthSlice.actions;
+export const { setUser, setToken, logOut } = userAuthSlice.actions;
 
 // export const incrementAsync = amount => dispatch => {
 // 	setTimeout(() => {

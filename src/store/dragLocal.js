@@ -4,16 +4,20 @@ export const dragLocalSlice = createSlice({
 	name: 'dragLocal',
 	initialState: {
 		itemSidebarOndrag: false,
+		droppedItem: null,
 	},
 	reducers: {
 		setItemSidebarDrag: (state, action) => {
 			state.itemSidebarOndrag = action.payload;
 		},
+		setDroppedItem: (state, action) => {
+			state.droppedItem = action.payload;
+		},
 	},
 });
 
-export const { setItemSidebarDrag } = dragLocalSlice.actions;
+export const { setItemSidebarDrag, setDroppedItem } = dragLocalSlice.actions;
 
-export const selectDragLocal = state => state.dragLocal.itemSidebarOndrag;
+export const selectDragLocal = state => state.dragLocal;
 
 export default dragLocalSlice.reducer;

@@ -1,0 +1,25 @@
+.loginPage {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+.formLoginContainer {
+	width: 540px;
+	margin: auto;
+	max-width: calc(100vw);
+	height: 400px;
+	max-height: 100vh;
+	padding: 12px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 4px;
+	.formTitle {
+		font-weight: 500;
+		font-size: 24px;
+		text-align: center;
+	}
+}

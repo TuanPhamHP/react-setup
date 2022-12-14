@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link, BrowserRouter, useLocation } from 'react-router-dom';
 import styles from '../assets/styles/Header.module.scss';
-
+import LogoutDialog from '../components/Dialog/LogoutDialog';
 // redux
 import { selectUser } from '../store/userAuth';
 import { useSelector, useDispatch } from 'react-redux';
@@ -30,12 +30,13 @@ const instructionSub = [
 	{ name: 'Danh sách', link: '/cong-trinh', active: ['/cong-trinh'] },
 	{ name: 'Thêm mới', link: '/cong-trinh/them-moi', active: ['/cong-trinh/them-moi'] },
 ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
 	const [anchorElConstrcution, setAnchorElConstrcution] = React.useState(null);
+
+	const [openDialogLogout, setOpenDialogLogout] = React.useState(false);
 
 	const user = useSelector(selectUser);
 	const dispatch = useDispatch();
@@ -57,6 +58,10 @@ function ResponsiveAppBar() {
 
 	const handleCloseUserMenu = () => {
 		setAnchorElUser(null);
+	};
+	const handleClickLogout = () => {
+		setOpenDialogLogout(true);
+		handleCloseUserMenu();
 	};
 	const handleCloseConstructionMenu = () => {
 		setAnchorElConstrcution(null);
@@ -210,7 +215,7 @@ function ResponsiveAppBar() {
 						))}
 					</Box>
 					<Box sx={{ flexGrow: 0, marginLeft: '16px' }}>
-						<Tooltip title='Open settings'>
+						<Tooltip title='Tùy chỉnh'>
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 								<Avatar alt={user.user?.name || 'U'} src='/static/images/avatar/2.jpg' />
 							</IconButton>
@@ -231,15 +236,17 @@ function ResponsiveAppBar() {
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
 						>
-							{settings.map(setting => (
-								<MenuItem key={setting} onClick={handleCloseUserMenu}>
-									<Typography textAlign='center'>{setting}</Typography>
-								</MenuItem>
-							))}
+							<MenuItem onClick={handleCloseUserMenu}>
+								<Typography textAlign='center'>Tài khoản</Typography>
+							</MenuItem>
+							<MenuItem onClick={handleClickLogout}>
+								<Typography textAlign='center'>Đăng xuất</Typography>
+							</MenuItem>
 						</Menu>
 					</Box>
 				</Toolbar>
 			</Container>
+			<LogoutDialog openDialog={openDialogLogout} setOpenDialog={setOpenDialogLogout} />
 		</AppBar>
 	);
 }
