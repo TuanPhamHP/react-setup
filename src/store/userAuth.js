@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { jsonCopy } from '../helpers/FormatnParse';
 import { deleteCookie } from '../helpers/customizeCookie';
+import { deleteSession } from '../helpers/customizeSession';
 
 export const userAuthSlice = createSlice({
 	name: 'userAuth',
@@ -19,6 +20,7 @@ export const userAuthSlice = createSlice({
 			state.user = null;
 			state.token = '';
 			deleteCookie('token');
+			deleteSession('token');
 		},
 	},
 });
