@@ -32,7 +32,7 @@ export default function ConstructionsList() {
 	return (
 		<div className='page-container'>
 			<div className='page-header'>
-				<h1 className='page-title'>Danh sách dự án</h1>
+				<h1 className='page-title'> --- --- --- </h1>
 			</div>
 			<CreateNewConstruction openDialogCreate={openDialogCreate} setOpenDialogCreate={setOpenDialogCreate} />
 			<div className='page-filter'>
@@ -93,7 +93,7 @@ export default function ConstructionsList() {
 			<div className='' style={{ display: 'flex', justifyContent: 'flex-end' }}>
 				<Pagination page={currentPage} setCurrentPage={setCurrentPage} total={totalPage} setTotalPage={setTotalPage} />
 			</div>
-			{/* <button
+			<button
 				onClick={() => {
 					setTotalPage(totalPage + 1);
 				}}
@@ -101,7 +101,7 @@ export default function ConstructionsList() {
 				Add pages {totalPage}
 			</button>
 			<p>Current page: {currentPage}</p>
-			<p>Total page: {totalPage}</p> */}
+			<p>Total page: {totalPage}</p>
 		</div>
 	);
 }

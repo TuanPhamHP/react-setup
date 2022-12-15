@@ -1,4 +1,4 @@
-import ContructionsTable from '../../components/Table/ContructionsTable';
+import DoorModelsTable from '../../components/Table/DoorModelsTable';
 import { useState, useEffect } from 'react';
 
 import Pagination from '../../components/Shared/Pagination';
@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import CreateNewConstruction from '../../components/Dialog/CreateNewConstruction';
+import CreateNewDoorModels from '../../components/Dialog/CreateNewDoorModels';
 export default function ConstructionsList() {
 	function createData(name, code, population, size) {
 		const density = population / size;
@@ -32,9 +32,9 @@ export default function ConstructionsList() {
 	return (
 		<div className='page-container'>
 			<div className='page-header'>
-				<h1 className='page-title'>Danh sách dự án</h1>
+				<h1 className='page-title'>Danh sách mẫu cửa</h1>
 			</div>
-			<CreateNewConstruction openDialogCreate={openDialogCreate} setOpenDialogCreate={setOpenDialogCreate} />
+			<CreateNewDoorModels openDialogCreate={openDialogCreate} setOpenDialogCreate={setOpenDialogCreate} />
 			<div className='page-filter'>
 				<Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 12, md: 12 }}>
 					<Grid item={true} xs={8} md={4}>
@@ -89,10 +89,8 @@ export default function ConstructionsList() {
 				</Grid>
 			</div>
 
-			<ContructionsTable rows={rows} />
-			<div className='' style={{ display: 'flex', justifyContent: 'flex-end' }}>
-				<Pagination page={currentPage} setCurrentPage={setCurrentPage} total={totalPage} setTotalPage={setTotalPage} />
-			</div>
+			<DoorModelsTable rows={rows} />
+
 			{/* <button
 				onClick={() => {
 					setTotalPage(totalPage + 1);

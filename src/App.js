@@ -20,7 +20,8 @@ import ConstructionsList from './pages/Constructions/List';
 import ConstructionsDetail from './pages/Constructions/Detail';
 import ConstructionsCreate from './pages/Constructions/Create';
 
-import DoorModels from './pages/DoorModels';
+import DoorModelsList from './pages/DoorModels/List';
+
 import Supplies from './pages/Supplies';
 import Login from './pages/Loggin';
 import Error from './pages/Error';
@@ -168,7 +169,7 @@ function App() {
 							path='/mau-cua'
 							element={
 								<ProtectedRoute expectedPath='/mau-cua'>
-									<DoorModels />
+									<DoorModelsList />
 								</ProtectedRoute>
 							}
 							errorElement=<Error />
