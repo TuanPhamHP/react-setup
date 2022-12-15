@@ -29,6 +29,7 @@
 	&NoOf {
 		min-height: calc(100vh - 136px);
 		max-height: calc(100vh - 136px);
+		padding: 8px;
 		&::-webkit-scrollbar {
 			width: 10px;
 			border-radius: 4px;
@@ -62,6 +63,9 @@
 		padding-left: 0px;
 		padding-bottom: 4px;
 		padding-top: 4px;
+	}
+	&Hiding {
+		display: none !important;
 	}
 }
 .constructionsFormBottom {

@@ -111,6 +111,10 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = createTheme({
 	palette: {
+		model: {
+			main: '#ff0000',
+			constrastText: '#000000',
+		},
 		black: '#000000',
 		dark: {
 			main: '#222222',
@@ -138,8 +142,13 @@ const theme = createTheme({
 			white: '#ffffff',
 			black: '#000',
 		},
+		error: {
+			main: '#D11313',
+		},
 		semantic: {
-			error: '#D11313',
+			error: {
+				main: '#D11313',
+			},
 			success: '#3AC430',
 			info: '#0569FF',
 			warning: '#FE9705',

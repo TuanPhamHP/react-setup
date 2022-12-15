@@ -28,6 +28,7 @@ import NoMatch from './pages/NoMatch';
 import { BrowserRouter as Router, Route, Routes, Navigate, Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 // helpers
+import { getSession } from './helpers/customizeSession';
 import { getCookie } from './helpers/customizeCookie';
 
 import '@fontsource/roboto/300.css';
@@ -39,7 +40,7 @@ function App() {
 	const authUser = useSelector(selectUser);
 
 	const ProtectedRoute = ({ expectedPath, redirectPath = '/login', children }) => {
-		const currentToken = getCookie('token', true);
+		const currentToken = getCookie('token', true) || getSession('token', true);
 		const dispatch = useDispatch();
 		const navigate = useNavigate();
 		const location = useLocation();

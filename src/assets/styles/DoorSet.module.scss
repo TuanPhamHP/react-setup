@@ -1,0 +1,22 @@
+.eachDoor {
+	padding: 8px;
+	min-height: 120px;
+	border-radius: 4px;
+	background-color: rgba(135, 207, 235, 0.256);
+	margin-bottom: 12px;
+	position: relative;
+}
+.fieldTitle {
+	font-weight: 500;
+	min-width: 100px;
+	width: 100px;
+	padding-left: 0px;
+	padding-bottom: 4px;
+	padding-top: 4px;
+}
+.buttonRemoveAbsolute {
+	position: absolute !important;
+	right: 2px;
+	top: 2px;
+	z-index: 2;
+}

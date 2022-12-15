@@ -24,6 +24,7 @@ import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router';
 
 // helpers
+import { setSession } from '../helpers/customizeSession';
 import { getCookie, setCookie, deleteCookie } from '../helpers/customizeCookie';
 import { getErrorMessage } from '../helpers/FormatnParse';
 
@@ -73,7 +74,7 @@ export default function FullWidthTabs() {
 	const [value, setValue] = useState(0);
 	const [rememberMe, setRememberMe] = useState(true);
 	const [showPassword, setShowPassword] = useState(false);
-	const [formLogin, setformLogin] = useState();
+	const [formLogin, setFormLogin] = useState({ email: '', password: '' });
 	const [formError, setFormError] = useState({});
 
 	const handleChange = (event, newValue) => {
@@ -88,7 +89,7 @@ export default function FullWidthTabs() {
 		event.preventDefault();
 	};
 	const handlerFormLoginInput = (e, field) => {
-		setformLogin({ ...formLogin, [field]: e.target.value });
+		setFormLogin({ ...formLogin, [field]: e.target.value });
 	};
 	const handleLogin = () => {
 		setFormError({});
@@ -107,13 +108,6 @@ export default function FullWidthTabs() {
 		}
 		setTimeout(() => {
 			if (formLogin.email === 'admin@gmail.com' && formLogin.password === '123456') {
-				if (rememberMe) {
-					setCookie('email', String(formLogin.email).trim(), 30, true);
-					setCookie('password', String(formLogin.password).trim(), 30, true);
-				} else {
-					deleteCookie('email');
-					deleteCookie('password');
-				}
 				const fakeResult = {
 					name: 'Admin',
 					phone: '0989898989',
@@ -121,7 +115,17 @@ export default function FullWidthTabs() {
 					avatar: null,
 					token: 'randomedToken',
 				};
-				setCookie('token', String(fakeResult.token).trim(), 30, true);
+				if (rememberMe) {
+					setCookie('email', String(formLogin.email).trim(), 30, true);
+					setCookie('password', String(formLogin.password).trim(), 30, true);
+					setCookie('token', String(fakeResult.token).trim(), 30, true);
+				} else {
+					deleteCookie('email');
+					deleteCookie('password');
+					deleteCookie('token');
+				}
+
+				setSession('token', String(fakeResult.token).trim(), true);
 				dispatch(setUser(fakeResult));
 				dispatch(setToken(fakeResult.token));
 				setLoadingLogin(false);
@@ -142,7 +146,7 @@ export default function FullWidthTabs() {
 		const email = getCookie('email', true);
 		const password = getCookie('password', true);
 		if (email && password) {
-			setformLogin({ email, password });
+			setFormLogin({ email, password });
 		}
 	}, []);
 
@@ -187,6 +191,7 @@ export default function FullWidthTabs() {
 										type='text'
 										placeholder='Tài khoản'
 										label='Tài khoản'
+										value={formLogin.email}
 										onChange={e => {
 											handlerFormLoginInput(e, 'email');
 										}}
@@ -200,6 +205,7 @@ export default function FullWidthTabs() {
 										helperText={getErrorMessage(formError.password)}
 										id='outlined-adornment-password'
 										type={showPassword ? 'text' : 'password'}
+										value={formLogin.password}
 										placeholder='Mật khẩu'
 										label='Mật khẩu'
 										fullWidth={true}
