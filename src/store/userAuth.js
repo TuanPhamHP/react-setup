@@ -14,7 +14,7 @@ export const userAuthSlice = createSlice({
 			state.user = action.payload ? jsonCopy(action.payload) : null;
 		},
 		setToken: (state, action) => {
-			state.user = action.payload ? jsonCopy(action.payload) : '';
+			state.token = action.payload ? jsonCopy(action.payload) : '';
 		},
 		logOut: state => {
 			state.user = null;

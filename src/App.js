@@ -22,7 +22,11 @@ import ConstructionsCreate from './pages/Constructions/Create';
 
 import DoorModelsList from './pages/DoorModels/List';
 
-import Supplies from './pages/Supplies';
+import Supplies from './pages/Supplies/Supplies';
+import SuppliesAl from './pages/Supplies/Al';
+import SuppliesGlass from './pages/Supplies/Glass';
+import SuppliesAccessory from './pages/Supplies/Accessory';
+import SuppliesExtra from './pages/Supplies/Extra';
 import Login from './pages/Loggin';
 import Error from './pages/Error';
 import NoMatch from './pages/NoMatch';
@@ -174,7 +178,63 @@ function App() {
 							}
 							errorElement=<Error />
 						/>
-						<Route path='/vat-tu' element={<Supplies />} errorElement=<Error /> />
+						<Route
+							path='/vat-tu'
+							element={
+								<ProtectedRoute>
+									<Supplies />
+								</ProtectedRoute>
+							}
+							errorElement=<Error />
+						>
+							<Route
+								path='nhom'
+								element={
+									<ProtectedRoute>
+										<SuppliesAl />
+									</ProtectedRoute>
+								}
+								errorElement=<Error />
+							/>
+							<Route
+								path='kinh'
+								element={
+									<ProtectedRoute>
+										<SuppliesGlass />
+									</ProtectedRoute>
+								}
+								errorElement=<Error />
+							/>
+							<Route
+								path='phu-kien'
+								element={
+									<ProtectedRoute>
+										<SuppliesAccessory />
+									</ProtectedRoute>
+								}
+								errorElement=<Error />
+							/>
+							<Route
+								path='vat-tu-phu'
+								element={
+									<ProtectedRoute>
+										<SuppliesExtra />
+									</ProtectedRoute>
+								}
+								errorElement=<Error />
+							/>
+						</Route>
+
+						{/* <Route
+							path='/vat-tu/nhom'
+							element={
+								<ProtectedRoute>
+									<SuppliesAl />
+								</ProtectedRoute>
+							}
+							errorElement=<Error />
+						/> */}
+
 						<Route
 							path='/home'
 							element={
@@ -186,7 +246,14 @@ function App() {
 						/>
 						<Route path='/login' element={<Login />} errorElement=<Error /> />
 
-						<Route path='*' element={<NoMatch />}></Route>
+						<Route
+							path='*'
+							element={
+								<ProtectedRoute>
+									<NoMatch />
+								</ProtectedRoute>
+							}
+						></Route>
 					</Routes>
 				</Router>
 			</div>

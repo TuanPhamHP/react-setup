@@ -15,14 +15,14 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { Link, BrowserRouter, useLocation } from 'react-router-dom';
 import styles from '../assets/styles/Header.module.scss';
 import LogoutDialog from '../components/Dialog/LogoutDialog';
+import Divider from '@mui/material/Divider';
 // redux
 import { selectUser } from '../store/userAuth';
 import { useSelector, useDispatch } from 'react-redux';
 
 const pages = [
 	// { name: 'Công trình', link: '/cong-trinh', active: ['/cong-trinh'] },
-	{ name: 'Mẫu cửa', link: '/mau-cua', active: ['/mau-cua'] },
-	{ name: 'Vật tư', link: '/vat-tu', active: ['/vat-tu'] },
+	// { name: 'Mẫu cửa', link: '/mau-cua', active: ['/mau-cua'] },
 	{ name: 'Hướng dẫn', link: '/huong-dan', active: ['/huong-dan'] },
 	{ name: 'Cài đặt', link: '/cai-dat', active: ['/cai-dat'] },
 ];
@@ -30,11 +30,18 @@ const instructionSub = [
 	{ name: 'Danh sách', link: '/cong-trinh', active: ['/cong-trinh'] },
 	{ name: 'Thêm mới', link: '/cong-trinh/them-moi', active: ['/cong-trinh/them-moi'] },
 ];
+const suppliesSub = [
+	{ name: 'Nhôm', link: '/vat-tu/nhom', active: ['/vat-tu/nhom'] },
+	{ name: 'Kính', link: '/vat-tu/kinh', active: ['/vat-tu/kinh'] },
+	{ name: 'Phụ kiện', link: '/vat-tu/phu-kien', active: ['/vat-tu/phu-kien'] },
+	{ name: 'Vật tư phụ', link: '/vat-tu/vat-tu-phu', active: ['/vat-tu/vat-tu-phu'] },
+];
 
 function ResponsiveAppBar() {
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
 	const [anchorElConstrcution, setAnchorElConstrcution] = React.useState(null);
+	const [anchorElSupplies, setAnchorElSupplies] = React.useState(null);
 
 	const [openDialogLogout, setOpenDialogLogout] = React.useState(false);
 
@@ -51,6 +58,9 @@ function ResponsiveAppBar() {
 	const handleOpenConstructionMenu = event => {
 		setAnchorElConstrcution(event.currentTarget);
 	};
+	const handleOpenSuppliesMenu = event => {
+		setAnchorElSupplies(event.currentTarget);
+	};
 
 	const handleCloseNavMenu = () => {
 		setAnchorElNav(null);
@@ -65,6 +75,9 @@ function ResponsiveAppBar() {
 	};
 	const handleCloseConstructionMenu = () => {
 		setAnchorElConstrcution(null);
+	};
+	const handleCloseSuppliesMenu = () => {
+		setAnchorElSupplies(null);
 	};
 	const isActiveNavRaw = currentPage => {
 		return Array.isArray(currentPage.active) && currentPage.active.includes(location.pathname);
@@ -177,7 +190,7 @@ function ResponsiveAppBar() {
 							Công trình
 						</MenuItem>
 						<Menu
-							sx={{ mt: '45px', padding: '12px ' }}
+							sx={{ mt: '45px', padding: '0' }}
 							id='menu-construction'
 							anchorEl={anchorElConstrcution}
 							anchorOrigin={{
@@ -195,6 +208,7 @@ function ResponsiveAppBar() {
 							{instructionSub.map(page => (
 								<MenuItem key={page.name} onClick={handleCloseConstructionMenu} sx={isActiveNav(page, true)}>
 									<Link
+										style={{ padding: '12px 18px ', width: '100%' }}
 										to={page.link}
 										className={`${styles.navigateLinkDropdown} ${
 											isActiveNavRaw(page) ? styles.navigateLinkDropdownActive : ''
@@ -205,7 +219,58 @@ function ResponsiveAppBar() {
 								</MenuItem>
 							))}
 						</Menu>
-
+						<MenuItem
+							onClick={handleCloseNavMenu}
+							sx={isActiveNav({ name: 'Mẫu cửa', link: '/mau-cua', active: ['/mau-cua'] })}
+						>
+							<Link to={'/mau-cua'} className={styles.navigateLink}>
+								Mẫu cửa
+							</Link>
+						</MenuItem>
+						<MenuItem
+							aria-controls='menu-appbar'
+							onClick={handleOpenSuppliesMenu}
+							sx={{
+								...isActiveNav({
+									name: 'Vật tư',
+									link: '/vat-tu',
+									active: ['/vat-tu', '/vat-tu/nhom', '/vat-tu/kinh', '/vat-tu/phu-kien', '/vat-tu/vat-tu-phu'],
+								}),
+								padding: '10px 24px',
+							}}
+						>
+							Vật tư
+						</MenuItem>
+						<Menu
+							sx={{ mt: '45px', padding: '0px ' }}
+							id='menu-supplies'
+							anchorEl={anchorElSupplies}
+							anchorOrigin={{
+								vertical: 'top',
+								horizontal: 'right',
+							}}
+							keepMounted
+							transformOrigin={{
+								vertical: 'top',
+								horizontal: 'right',
+							}}
+							open={Boolean(anchorElSupplies)}
+							onClose={handleCloseSuppliesMenu}
+						>
+							{suppliesSub.map(page => (
+								<MenuItem key={page.name} onClick={handleCloseSuppliesMenu} sx={isActiveNav(page, true)}>
+									<Link
+										style={{ padding: '12px 18px', width: '100%' }}
+										to={page.link}
+										className={`${styles.navigateLinkDropdown} ${
+											isActiveNavRaw(page) ? styles.navigateLinkDropdownActive : ''
+										}`}
+									>
+										{page.name}
+									</Link>
+								</MenuItem>
+							))}
+						</Menu>
 						{pages.map(page => (
 							<MenuItem key={page.name} onClick={handleCloseNavMenu} sx={isActiveNav(page)}>
 								<Link to={page.link} className={styles.navigateLink}>
@@ -217,7 +282,7 @@ function ResponsiveAppBar() {
 					<Box sx={{ flexGrow: 0, marginLeft: '16px' }}>
 						<Tooltip title='Tùy chỉnh'>
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt={user.user?.name || 'U'} src='/static/images/avatar/2.jpg' />
+								<Avatar alt={user.user?.name || 'U'} src={user.user?.avatar} />
 							</IconButton>
 						</Tooltip>
 						<Menu
@@ -236,11 +301,17 @@ function ResponsiveAppBar() {
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
 						>
-							<MenuItem onClick={handleCloseUserMenu}>
+							<MenuItem onClick={handleCloseUserMenu} sx={{ borderBottom: '1px solid #ebebeb' }}>
+								<Typography textAlign='center'>Xin chào, {user.user?.name} </Typography>
+							</MenuItem>
+							<MenuItem onClick={handleCloseUserMenu} sx={{ borderBottom: '1px solid #ebebeb' }}>
 								<Typography textAlign='center'>Tài khoản</Typography>
 							</MenuItem>
+
 							<MenuItem onClick={handleClickLogout}>
-								<Typography textAlign='center'>Đăng xuất</Typography>
+								<Typography textAlign='center' color={'red'}>
+									Đăng xuất
+								</Typography>
 							</MenuItem>
 						</Menu>
 					</Box>

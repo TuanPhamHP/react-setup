@@ -75,7 +75,9 @@ export default function FullWidthTabs() {
 	const [rememberMe, setRememberMe] = useState(true);
 	const [showPassword, setShowPassword] = useState(false);
 	const [formLogin, setFormLogin] = useState({ email: '', password: '' });
+	const [formRegistration, setFormRegistration] = useState({ name: '', email: '', password: '' });
 	const [formError, setFormError] = useState({});
+	const [formErrorRegis, setFormErrorRegis] = useState({});
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
@@ -90,6 +92,57 @@ export default function FullWidthTabs() {
 	};
 	const handlerFormLoginInput = (e, field) => {
 		setFormLogin({ ...formLogin, [field]: e.target.value });
+	};
+	const handlerFormRegisInput = (e, field) => {
+		setFormRegistration({ ...formRegistration, [field]: e.target.value });
+	};
+	const handleRegis = () => {
+		setFormErrorRegis({});
+		setLoadingLogin(true);
+		let objError = {};
+		if (!String(formRegistration.name).trim()) {
+			objError = { ...objError, name: 'required' };
+		}
+		if (!String(formRegistration.email).trim()) {
+			objError = { ...objError, email: 'required' };
+		}
+		if (!String(formRegistration.password).trim()) {
+			objError = { ...objError, password: 'required' };
+		}
+		if (Object.keys(objError).length) {
+			setFormErrorRegis(objError);
+			setLoadingLogin(false);
+			return;
+		}
+		setTimeout(() => {
+			if (formRegistration.email === 'admin@gmail.com' && formRegistration.password === '123456') {
+				const fakeResult = {
+					name: 'Admin',
+					phone: '0989898989',
+					email: 'admin@gmail.com',
+					avatar: null,
+					token: 'randomedToken',
+				};
+				if (rememberMe) {
+					setCookie('email', String(formErrorRegis.email).trim(), 30, true);
+					setCookie('password', String(formErrorRegis.password).trim(), 30, true);
+					setCookie('token', String(fakeResult.token).trim(), 30, true);
+				} else {
+					deleteCookie('email');
+					deleteCookie('password');
+					deleteCookie('token');
+				}
+
+				setSession('token', String(fakeResult.token).trim(), true);
+				dispatch(setUser(fakeResult));
+				dispatch(setToken(fakeResult.token));
+				setLoadingLogin(false);
+				navigate('/');
+				return;
+			}
+			enqueueSnackbar('Thông tin đăng nhập không chính xác. Vui lòng thử lại', { variant: 'error' });
+			setLoadingLogin(false);
+		}, 2000);
 	};
 	const handleLogin = () => {
 		setFormError({});
@@ -203,7 +256,6 @@ export default function FullWidthTabs() {
 									<TextField
 										error={!!formError.password}
 										helperText={getErrorMessage(formError.password)}
-										id='outlined-adornment-password'
 										type={showPassword ? 'text' : 'password'}
 										value={formLogin.password}
 										placeholder='Mật khẩu'
@@ -253,46 +305,75 @@ export default function FullWidthTabs() {
 						<TabPanel value={value} index={1} dir={theme.direction}>
 							<div className='d-flex flex-column'>
 								<FormControl fullWidth={true} sx={{ m: '12px 0', p: 0 }} variant='outlined'>
-									<TextField type='text' placeholder='Họ tên' label='Họ tên' fullWidth={true} />
+									<TextField
+										error={!!formErrorRegis.name}
+										helperText={getErrorMessage(formErrorRegis.name)}
+										value={formRegistration.name}
+										type='text'
+										placeholder='Họ tên'
+										label='Họ tên'
+										fullWidth={true}
+										onChange={e => {
+											handlerFormRegisInput(e, 'name');
+										}}
+									/>
 								</FormControl>
 								<FormControl fullWidth={true} sx={{ m: '12px 0', p: 0 }} variant='outlined'>
-									<TextField type='text' placeholder='Email' label='Email' fullWidth={true} />
+									<TextField
+										type='text'
+										placeholder='Email'
+										label='Email'
+										fullWidth={true}
+										error={!!formErrorRegis.email}
+										helperText={getErrorMessage(formErrorRegis.email)}
+										value={formRegistration.email}
+										onChange={e => {
+											handlerFormRegisInput(e, 'email');
+										}}
+									/>
 								</FormControl>
 								<FormControl fullWidth={true} sx={{ m: '12px 0', p: 0 }} variant='outlined'>
-									<InputLabel htmlFor='outlined-adornment-password2'>Mật khẩu</InputLabel>
-									<OutlinedInput
-										id='outlined-adornment-password2'
+									<TextField
+										error={!!formErrorRegis.password}
+										helperText={getErrorMessage(formErrorRegis.password)}
 										type={showPassword ? 'text' : 'password'}
 										placeholder='Mật khẩu'
 										label='Mật khẩu'
 										fullWidth={true}
-										endAdornment={
-											<InputAdornment position='end'>
-												<IconButton
-													aria-label='toggle password visibility'
-													onClick={handleClickShowPassword}
-													onMouseDown={handleMouseDownPassword}
-													edge='end'
-												>
-													{showPassword ? <VisibilityOff /> : <Visibility />}
-												</IconButton>
-											</InputAdornment>
-										}
+										value={formRegistration.password}
+										onChange={e => {
+											handlerFormRegisInput(e, 'password');
+										}}
+										InputProps={{
+											endAdornment: (
+												<InputAdornment position='end'>
+													<IconButton
+														aria-label='toggle password visibility'
+														onClick={handleClickShowPassword}
+														onMouseDown={handleMouseDownPassword}
+														edge='end'
+													>
+														{showPassword ? <VisibilityOff /> : <Visibility />}
+													</IconButton>
+												</InputAdornment>
+											),
+										}}
 									/>
 								</FormControl>
-
 								<Button
 									variant='contained'
 									className='no-box-shadow'
 									size='large'
 									sx={{
-										display: 'block',
+										display: 'flex',
+										alignItems: 'center',
 										marginTop: 2,
 										whiteSpace: 'nowrap',
 										textTransform: 'none',
 									}}
+									onClick={handleRegis}
 								>
-									Đăng ký
+									{loadingLogin ? <CircularProgress color='grey' size={24} sx={{ margin: 0 }} /> : <>Đăng ký</>}
 								</Button>
 							</div>
 						</TabPanel>

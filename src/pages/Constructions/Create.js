@@ -36,7 +36,7 @@ export default function ConstructionsList() {
 	};
 	const dragLocal = useSelector(selectDragLocal);
 	const [isEdit, setIsEdit] = useState([]);
-	const [agType, setAgType] = useState(null);
+	const [alType, setAlType] = useState(null);
 	const [onCreateProcess, setOnCreateProcess] = useState(false);
 	const [rows, setRows] = useState([
 		createData('United States', 'US', 327167434, 9833520),
@@ -46,8 +46,8 @@ export default function ConstructionsList() {
 
 	const dispatch = useDispatch();
 
-	const changeAgType = (e, data) => {
-		setAgType(data);
+	const changeAlType = (e, data) => {
+		setAlType(data);
 	};
 
 	function getMaxHeightBottom() {
@@ -264,10 +264,10 @@ export default function ConstructionsList() {
 								<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Loại nhôm:</p>
 								<Autocomplete
 									{...defaultProps}
-									onChange={changeAgType}
+									onChange={changeAlType}
 									disableClearable
 									noOptionsText='Không có kết quả phù hợp'
-									value={agType}
+									value={alType}
 									isOptionEqualToValue={(option, value) => option.title === value.title}
 									renderInput={params => <TextField {...params} placeholder='Loại nhôm' variant='standard' />}
 								/>
