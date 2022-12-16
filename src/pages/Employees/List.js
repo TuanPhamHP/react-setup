@@ -1,4 +1,4 @@
-import SuppliesGlassTable from '../../components/Table/SuppliesGlassTable';
+import EmployeesTable from '../../components/Table/EmployeesTable';
 import { useState, useEffect } from 'react';
 
 import Pagination from '../../components/Shared/Pagination';
@@ -6,24 +6,24 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import CreateNewSuppliesGlass from '../../components/Dialog/CreateNewSuppliesGlass';
+import CreateNewEmployee from '../../components/Dialog/CreateNewEmployee';
 export default function ConstructionsList() {
 	function createData(name, code, population, size) {
 		const density = population / size;
 		return { name, code, population, size, density };
 	}
-	const rows = [createData('Kính 01', '18', 1324171354, 3287263), createData('Kính 02', '14', 1403500365, 9596961)];
-
 	const [firstDataLoading, setFirstDataLoading] = useState(true);
 	const [dataLoading, setDataLoading] = useState(true);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [totalPage, setTotalPage] = useState(1);
+	const [totalPage, setTotalPage] = useState(2);
 	const [openDialogCreate, setOpenDialogCreate] = useState(false);
-	const [rowsData, setRowsData] = useState(rows);
 
-	const handleCreateNewData = ({ name, code, population, size }) => {
-		setRowsData([...rowsData, createData(name, code, population, size)]);
-	};
+	const rows = [
+		createData('Admin', 'admin@gmail.com', 'Active', 'Admin', 3287263),
+		createData('N.V.A', 'example1@gmail.com', 'Active', 'Nhân viên', 3287263),
+		createData('N.V.B', 'example2@gmail.com', 'Active', 'Nhân viên', 9596961),
+		createData('N.V.C', 'example3@gmail.com', 'Active', 'Nhân viên', 301340),
+	];
 
 	const getListData = () => {
 		setDataLoading(true);
@@ -38,16 +38,13 @@ export default function ConstructionsList() {
 	useEffect(() => {
 		getListData();
 	}, [currentPage]);
+
 	return (
 		<div className='page-container'>
 			<div className='page-header'>
-				<h1 className='page-title'>Danh sách vật tư Kính</h1>
+				<h1 className='page-title'>Danh sách nhân viên</h1>
 			</div>
-			<CreateNewSuppliesGlass
-				openDialogCreate={openDialogCreate}
-				setOpenDialogCreate={setOpenDialogCreate}
-				handleCreateNewData={handleCreateNewData}
-			/>
+			<CreateNewEmployee openDialogCreate={openDialogCreate} setOpenDialogCreate={setOpenDialogCreate} />
 			<div className='page-filter'>
 				<Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 12, md: 12 }}>
 					<Grid item={true} xs={8} md={4}>
@@ -102,10 +99,19 @@ export default function ConstructionsList() {
 				</Grid>
 			</div>
 
-			<SuppliesGlassTable rows={rowsData} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
+			<EmployeesTable rows={rows} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
 			<div className='' style={{ display: 'flex', justifyContent: 'flex-end' }}>
 				<Pagination page={currentPage} setCurrentPage={setCurrentPage} total={totalPage} setTotalPage={setTotalPage} />
 			</div>
+			{/* <button
+				onClick={() => {
+					setTotalPage(totalPage + 1);
+				}}
+			>
+				Add pages {totalPage}
+			</button>
+			<p>Current page: {currentPage}</p>
+			<p>Total page: {totalPage}</p> */}
 		</div>
 	);
 }

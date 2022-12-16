@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { Link, BrowserRouter, useLocation } from 'react-router-dom';
+import { Link, BrowserRouter, useLocation, useNavigate } from 'react-router-dom';
 import styles from '../assets/styles/Header.module.scss';
 import LogoutDialog from '../components/Dialog/LogoutDialog';
 import Divider from '@mui/material/Divider';
@@ -48,6 +48,7 @@ function ResponsiveAppBar() {
 	const user = useSelector(selectUser);
 	const dispatch = useDispatch();
 	const location = useLocation();
+	const navigate = useNavigate();
 
 	const handleOpenNavMenu = event => {
 		setAnchorElNav(event.currentTarget);
@@ -78,6 +79,10 @@ function ResponsiveAppBar() {
 	};
 	const handleCloseSuppliesMenu = () => {
 		setAnchorElSupplies(null);
+	};
+	const handleNavigateSub = () => {
+		navigate('/nhan-vien');
+		handleCloseUserMenu();
 	};
 	const isActiveNavRaw = currentPage => {
 		return Array.isArray(currentPage.active) && currentPage.active.includes(location.pathname);
@@ -303,6 +308,9 @@ function ResponsiveAppBar() {
 						>
 							<MenuItem onClick={handleCloseUserMenu} sx={{ borderBottom: '1px solid #ebebeb' }}>
 								<Typography textAlign='center'>Xin chào, {user.user?.name} </Typography>
+							</MenuItem>
+							<MenuItem onClick={handleNavigateSub} sx={{ borderBottom: '1px solid #ebebeb' }}>
+								<Typography textAlign='center'>Nhân viên</Typography>
 							</MenuItem>
 							<MenuItem onClick={handleCloseUserMenu} sx={{ borderBottom: '1px solid #ebebeb' }}>
 								<Typography textAlign='center'>Tài khoản</Typography>

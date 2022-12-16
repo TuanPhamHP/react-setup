@@ -27,6 +27,9 @@ import SuppliesAl from './pages/Supplies/Al';
 import SuppliesGlass from './pages/Supplies/Glass';
 import SuppliesAccessory from './pages/Supplies/Accessory';
 import SuppliesExtra from './pages/Supplies/Extra';
+
+import EmployeesList from './pages/Employees/List';
+
 import Login from './pages/Loggin';
 import Error from './pages/Error';
 import NoMatch from './pages/NoMatch';
@@ -225,15 +228,15 @@ function App() {
 							/>
 						</Route>
 
-						{/* <Route
-							path='/vat-tu/nhom'
+						<Route
+							path='/nhan-vien'
 							element={
 								<ProtectedRoute>
-									<SuppliesAl />
+									<EmployeesList />
 								</ProtectedRoute>
 							}
 							errorElement=<Error />
-						/> */}
+						/>
 
 						<Route
 							path='/home'

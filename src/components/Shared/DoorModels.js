@@ -21,25 +21,25 @@ export default function Component(params) {
 
 	return (
 		<Card sx={{ width: '100%', height: '100%', position: 'relative' }}>
+			<IconButton
+				aria-label='more'
+				id='long-button'
+				aria-controls={open ? 'long-menu' : undefined}
+				aria-expanded={open ? 'true' : undefined}
+				aria-haspopup='true'
+				onClick={handleClick}
+				sx={{
+					position: 'absolute',
+					zIndex: 2,
+					top: '2px',
+					right: '2px',
+					backgroundColor: '#cec5c5a3',
+					backdropFilter: 'blur(4px)',
+				}}
+			>
+				<MoreHorizIcon htmlColor='#000' />
+			</IconButton>
 			<CardActionArea>
-				<IconButton
-					aria-label='more'
-					id='long-button'
-					aria-controls={open ? 'long-menu' : undefined}
-					aria-expanded={open ? 'true' : undefined}
-					aria-haspopup='true'
-					onClick={handleClick}
-					sx={{
-						position: 'absolute',
-						zIndex: 2,
-						top: '2px',
-						right: '2px',
-						backgroundColor: '#cec5c5a3',
-						backdropFilter: 'blur(4px)',
-					}}
-				>
-					<MoreHorizIcon htmlColor='#000' />
-				</IconButton>
 				<Menu
 					MenuListProps={{
 						'aria-labelledby': 'long-button',

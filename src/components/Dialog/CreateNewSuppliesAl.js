@@ -15,17 +15,20 @@ import { getErrorMessage } from '../../helpers/FormatnParse';
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction='up' ref={ref} {...props} />;
 });
+
+const defaultFormData = {
+	name: '',
+	unit: null,
+	type: null,
+	price: '',
+	density: '',
+};
+
 export default function FormDialog(props) {
 	const [open, setOpen] = React.useState(props.openDialogCreate);
 	const [formError, setFormError] = React.useState({});
 	const [loadingCreate, setLoadingCreate] = React.useState(false);
-	const [formData, setFormData] = React.useState({
-		name: '',
-		unit: null,
-		type: null,
-		price: '',
-		density: '',
-	});
+	const [formData, setFormData] = React.useState({ ...defaultFormData });
 	const top100Films = [
 		{ title: 'The Shawshank Redemption', year: 1994 },
 		{ title: 'The Godfather', year: 1972 },
@@ -56,13 +59,7 @@ export default function FormDialog(props) {
 	};
 	const clearData = () => {
 		setFormError({});
-		setFormData({
-			name: '',
-			unit: null,
-			type: null,
-			price: '',
-			density: '',
-		});
+		setFormData({ ...defaultFormData });
 	};
 	const handleCreate = () => {
 		setLoadingCreate(true);
@@ -108,7 +105,7 @@ export default function FormDialog(props) {
 
 	return (
 		<div>
-			<Dialog TransitionComponent={Transition} open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
+			<Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
 				<DialogTitle>Thêm vật tư - Nhôm</DialogTitle>
 				<DialogContent>
 					<div className='d-flex flex-column' style={{ marginBottom: '12px' }}>

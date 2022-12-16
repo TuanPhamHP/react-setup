@@ -38,7 +38,7 @@ export default function FormDialog(props) {
 
 	return (
 		<div>
-			<Dialog TransitionComponent={Transition} open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
+			<Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
 				<DialogTitle>Đăng xuất</DialogTitle>
 				<DialogContent>
 					<DialogContentText>Bạn chắc chắn muốn đăng xuất chứ?</DialogContentText>

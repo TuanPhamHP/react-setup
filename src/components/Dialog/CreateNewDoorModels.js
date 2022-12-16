@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router';
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction='up' ref={ref} {...props} />;
 });
+
 export default function FormDialog(props) {
 	const [open, setOpen] = React.useState(props.openDialogCreate);
 	const [name, setName] = React.useState('');
@@ -44,7 +45,7 @@ export default function FormDialog(props) {
 
 	return (
 		<div>
-			<Dialog TransitionComponent={Transition} open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
+			<Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
 				<DialogTitle>Thêm mẫu cửa</DialogTitle>
 				<DialogContent>
 					<TextField

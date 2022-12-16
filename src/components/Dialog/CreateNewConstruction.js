@@ -44,7 +44,7 @@ export default function FormDialog(props) {
 
 	return (
 		<div>
-			<Dialog TransitionComponent={Transition} open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
+			<Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
 				<DialogTitle>Thêm dự án</DialogTitle>
 				<DialogContent>
 					<TextField

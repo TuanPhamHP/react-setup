@@ -19,6 +19,12 @@ export default function PaginationSize(props) {
 	useEffect(() => {
 		setTotal(props.total);
 	}, [props.total]);
+
+	useEffect(() => {
+		if (props.page !== page) {
+			setPage(props.page);
+		}
+	}, [props.page]);
 	return (
 		<Pagination
 			showFirstButton

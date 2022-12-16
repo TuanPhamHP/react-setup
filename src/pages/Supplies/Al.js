@@ -13,11 +13,27 @@ export default function ConstructionsList() {
 		return { name, code, population, size, density };
 	}
 
+	const [firstDataLoading, setFirstDataLoading] = useState(true);
+	const [dataLoading, setDataLoading] = useState(true);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPage, setTotalPage] = useState(2);
 	const [openDialogCreate, setOpenDialogCreate] = useState(false);
 
 	const rows = [createData('India', 'IN', 1324171354, 3287263), createData('China', 'CN', 1403500365, 9596961)];
+
+	const getListData = () => {
+		setDataLoading(true);
+		setTimeout(() => {
+			setFirstDataLoading(false);
+			setDataLoading(false);
+		}, 700);
+	};
+	useEffect(() => {
+		getListData();
+	}, []);
+	useEffect(() => {
+		getListData();
+	}, [currentPage]);
 	return (
 		<div className='page-container'>
 			<div className='page-header'>
@@ -78,7 +94,7 @@ export default function ConstructionsList() {
 				</Grid>
 			</div>
 
-			<SuppliesAlTable rows={rows} />
+			<SuppliesAlTable rows={rows} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
 			<div className='' style={{ display: 'flex', justifyContent: 'flex-end' }}>
 				<Pagination page={currentPage} setCurrentPage={setCurrentPage} total={totalPage} setTotalPage={setTotalPage} />
 			</div>

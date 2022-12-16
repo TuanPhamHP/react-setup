@@ -15,14 +15,19 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 import styles from '../../assets/styles/Table.module.scss';
 const columns = [
-	{ id: 'name', label: 'Tên', minWidth: 170 },
-	{ id: 'code', label: 'Số điện thoại', minWidth: 100 },
+	{ id: 'name', label: 'Họ tên', minWidth: 170 },
+	{ id: 'code', label: 'Email', minWidth: 100 },
 	{
 		id: 'population',
 		label: 'Trạng thái',
 		minWidth: 170,
-		align: 'right',
-		format: value => value.toLocaleString('en-US'),
+		align: 'center',
+	},
+	{
+		id: 'size',
+		label: 'Vai trò',
+		minWidth: 170,
+		align: 'center',
 	},
 	{
 		id: 'action',
@@ -53,10 +58,10 @@ export default function StickyHeadTable(props) {
 					aria-controls={selectedData && data.name === selectedData.name ? 'long-menu' : undefined}
 					aria-expanded={selectedData && data.name === selectedData.name ? 'true' : undefined}
 					aria-haspopup='true'
+					size='small'
 					onClick={e => {
 						handleClick(e, data);
 					}}
-					size='small'
 					sx={{
 						backgroundColor: '#cec5c5a3',
 						backdropFilter: 'blur(4px)',
@@ -73,10 +78,13 @@ export default function StickyHeadTable(props) {
 					onClose={handleClose}
 				>
 					<MenuItem onClick={handleClose} sx={{ fontSize: '14px' }}>
-						Sửa
+						Edit
 					</MenuItem>
 					<MenuItem onClick={handleClose} sx={{ fontSize: '14px' }}>
-						Tải báo giá
+						Clone
+					</MenuItem>
+					<MenuItem onClick={handleClose} sx={{ fontSize: '14px' }}>
+						Vật tư phụ
 					</MenuItem>
 				</Menu>
 			</>
@@ -112,14 +120,7 @@ export default function StickyHeadTable(props) {
 								<>
 									{rows.map(row => {
 										return (
-											<TableRow
-												hover
-												role='checkbox'
-												tabIndex={-1}
-												key={row.code}
-												sx={{ p: 1 }}
-												className={props.onLoadData ? 'table-body-loading' : ''}
-											>
+											<TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
 												{columns.map(column => {
 													const value = row[column.id];
 													return (
