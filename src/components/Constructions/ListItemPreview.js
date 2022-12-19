@@ -53,6 +53,7 @@ export default function NestedList() {
 		setOpen(_open);
 	};
 
+	const openAllListDoor = () => {};
 	return (
 		<List
 			sx={{ width: '100%', maxWidth: '100%', bgcolor: 'background.white' }}
@@ -187,6 +188,7 @@ export default function NestedList() {
 					textDecoration: 'underline',
 					cursor: 'pointer',
 				}}
+				onClick={openAllListDoor}
 			>
 				Xem toàn bộ
 			</Typography>

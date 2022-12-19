@@ -1,6 +1,6 @@
 .listItemWr {
-	min-height: calc(100vh - 136px);
-	max-height: calc(100vh - 136px);
+	min-height: calc(100vh - 156px);
+	max-height: calc(100vh - 156px);
 	// position: absolute;
 	overflow-y: scroll;
 	overflow-x: visible;
@@ -27,8 +27,8 @@
 		}
 	}
 	&NoOf {
-		min-height: calc(100vh - 136px);
-		max-height: calc(100vh - 136px);
+		min-height: calc(100vh - 156px);
+		max-height: calc(100vh - 156px);
 		padding: 8px;
 		&::-webkit-scrollbar {
 			width: 10px;

@@ -25,6 +25,7 @@ export default function PaginationSize(props) {
 			setPage(props.page);
 		}
 	}, [props.page]);
+
 	return (
 		<Pagination
 			showFirstButton
