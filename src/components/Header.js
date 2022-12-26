@@ -312,9 +312,9 @@ function ResponsiveAppBar() {
 							<MenuItem onClick={handleNavigateSub} sx={{ borderBottom: '1px solid #ebebeb' }}>
 								<Typography textAlign='center'>Nhân viên</Typography>
 							</MenuItem>
-							<MenuItem onClick={handleCloseUserMenu} sx={{ borderBottom: '1px solid #ebebeb' }}>
+							{/* <MenuItem onClick={handleCloseUserMenu} sx={{ borderBottom: '1px solid #ebebeb' }}>
 								<Typography textAlign='center'>Tài khoản</Typography>
-							</MenuItem>
+							</MenuItem> */}
 
 							<MenuItem onClick={handleClickLogout}>
 								<Typography textAlign='center' color={'red'}>
