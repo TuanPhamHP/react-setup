@@ -1,5 +1,5 @@
 import '../App.css';
-import notFound from '../assets/images/404-er.webp';
+// import notFound from '../assets/images/404-page.png';
 
 export default function NoMatch() {
 	return (
@@ -11,7 +11,7 @@ export default function NoMatch() {
 				}}
 			>
 				<img
-					src={notFound}
+					src='https://cdn.pixabay.com/photo/2021/07/21/12/49/error-6482984_960_720.png'
 					alt=''
 					style={{
 						maxWidth: '400px',
