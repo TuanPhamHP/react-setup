@@ -5,7 +5,7 @@ export default function Home() {
 	return (
 		<>
 			<div
-				className='d-flex align-center justify-content-center w-100'
+				className='d-flex flex-column align-center justify-content-center w-100'
 				style={{
 					paddingTop: '100px',
 				}}
