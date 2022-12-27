@@ -15,7 +15,17 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { Link, BrowserRouter, useLocation, useNavigate } from 'react-router-dom';
 import styles from '../assets/styles/Header.module.scss';
 import LogoutDialog from '../components/Dialog/LogoutDialog';
+// DRAWER
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+
 // redux
 import { selectUser } from '../store/userAuth';
 import { useSelector, useDispatch } from 'react-redux';
@@ -38,6 +48,10 @@ const suppliesSub = [
 ];
 
 function ResponsiveAppBar() {
+	const [state, setState] = React.useState({
+		left: false,
+	});
+
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
 	const [anchorElConstrcution, setAnchorElConstrcution] = React.useState(null);
@@ -49,6 +63,14 @@ function ResponsiveAppBar() {
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const navigate = useNavigate();
+
+	const toggleDrawer = (anchor, open) => event => {
+		if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+			return;
+		}
+
+		setState({ ...state, [anchor]: open });
+	};
 
 	const handleOpenNavMenu = event => {
 		setAnchorElNav(event.currentTarget);
@@ -98,6 +120,69 @@ function ResponsiveAppBar() {
 					padding: 0,
 			  };
 	};
+
+	const list = anchor => (
+		<Box
+			sx={{ height: '100%', width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250, bgcolor: 'primary.main' }}
+			role='presentation'
+			onClick={toggleDrawer(anchor, false)}
+			onKeyDown={toggleDrawer(anchor, false)}
+		>
+			<List sx={{ paddingTop: 0, paddingBottom: 0 }}>
+				{instructionSub.map(page => (
+					<ListItem key={page.link} disablePadding>
+						<ListItemButton>
+							<ListItemIcon
+								sx={{
+									minWidth: '40px',
+								}}
+							>
+								{1 % 2 === 0 ? <InboxIcon color='white' /> : <MailIcon color='white' />}
+							</ListItemIcon>
+
+							<Link to={page.link} className={styles.navigateLink}>
+								{page.name}
+							</Link>
+						</ListItemButton>
+					</ListItem>
+				))}
+				<ListItem disablePadding>
+					<ListItemButton>
+						<ListItemIcon
+							sx={{
+								minWidth: '40px',
+							}}
+							color='primary.white'
+						>
+							<InboxIcon color='white' />
+						</ListItemIcon>
+						<Link to={'/mau-cua'} className={styles.navigateLink}>
+							Mẫu cửa
+						</Link>
+					</ListItemButton>
+				</ListItem>
+				{pages.map(page => (
+					<ListItem key={page.link} disablePadding>
+						<ListItemButton>
+							<ListItemIcon
+								sx={{
+									minWidth: '40px',
+								}}
+								color='primary.white'
+							>
+								{1 % 2 === 0 ? <InboxIcon /> : <MailIcon color='white' />}
+							</ListItemIcon>
+
+							<Link to={page.link} className={styles.navigateLink}>
+								{page.name}
+							</Link>
+						</ListItemButton>
+					</ListItem>
+				))}
+			</List>
+		</Box>
+	);
+
 	return (
 		<AppBar position='sticky' className={styles.headerContainer}>
 			<Container maxWidth='false'>
@@ -127,37 +212,15 @@ function ResponsiveAppBar() {
 							aria-label='account of current user'
 							aria-controls='menu-appbar'
 							aria-haspopup='true'
-							onClick={handleOpenNavMenu}
+							onClick={toggleDrawer('left', true)}
 							color='inherit'
 						>
 							<MenuIcon />
 						</IconButton>
-						<Menu
-							id='menu-appbar'
-							anchorEl={anchorElNav}
-							anchorOrigin={{
-								vertical: 'bottom',
-								horizontal: 'left',
-							}}
-							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'left',
-							}}
-							open={Boolean(anchorElNav)}
-							onClose={handleCloseNavMenu}
-							sx={{
-								display: { xs: 'block', md: 'none' },
-							}}
-						>
-							{pages.map(page => (
-								<MenuItem key={page.name} onClick={handleCloseNavMenu} sx={isActiveNav(page)}>
-									<Link to={page.link} className={`${styles.navigateLink}`}>
-										<Typography textAlign='center'>{page.name}</Typography>
-									</Link>
-								</MenuItem>
-							))}
-						</Menu>
+
+						<Drawer sx={{ padding: 0 }} anchor={'left'} open={state['left']} onClose={toggleDrawer('left', false)}>
+							{list('left')}
+						</Drawer>
 					</Box>
 					{/* DESKTOP */}
 					<AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />

@@ -72,7 +72,7 @@ export default function ConstructionsList() {
 							</Button>
 						</div>
 					</Grid>
-					<Grid item={true} xs={2} md={1} ml={'auto'}>
+					<Grid item={true} xs={4} md={1} ml={'auto'}>
 						<Button
 							variant='contained'
 							sx={{

@@ -119,6 +119,9 @@ const theme = createTheme({
 		dark: {
 			main: '#222222',
 		},
+		white: {
+			main: '#ffffff',
+		},
 		grey: {
 			main: '#ebebeb',
 		},
