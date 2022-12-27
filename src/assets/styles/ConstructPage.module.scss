@@ -28,7 +28,7 @@
 	}
 	&NoOf {
 		min-height: calc(100vh - 156px);
-		max-height: calc(100vh - 156px);
+		// max-height: calc(100vh - 156px);
 		padding: 8px;
 		&::-webkit-scrollbar {
 			width: 10px;
@@ -89,4 +89,12 @@
 	text-align: center;
 	background-color: rgba(240, 255, 255, 0.776);
 	font-size: 20px;
+}
+@media only screen and (max-width: 900px) {
+	.listItemWr {
+		max-height: unset;
+		&NoOf {
+			max-height: unset;
+		}
+	}
 }

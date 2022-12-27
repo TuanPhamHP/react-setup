@@ -112,7 +112,7 @@ export default function ConstructionsList() {
 				columns={{ xs: 12, sm: 12, md: 12 }}
 				className={`constructionsTopGridContainer`}
 			>
-				<Grid item={true} xs={12} sm={4} md={3} sx={{ padding: '0 12px' }}>
+				<Grid item={true} xs={12} sm={12} md={4} lg={3} sx={{ padding: '0 12px' }}>
 					<div className={`${dragLocal ? styles.listItemWrNoOf : styles.listItemWr} box-shadow-m1`}>
 						<ListItemPreview />
 					</div>
@@ -120,12 +120,12 @@ export default function ConstructionsList() {
 				<Grid
 					item={true}
 					xs={12}
-					sm={8}
-					md={9}
+					sm={12}
+					md={8}
+					lg={9}
 					sx={{
 						display: 'flex',
 						flexDirection: 'column',
-						maxHeight: `calc(100vh - 115px)`,
 					}}
 				>
 					<Grid
