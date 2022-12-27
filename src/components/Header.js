@@ -128,7 +128,11 @@ function ResponsiveAppBar() {
 			onClick={toggleDrawer(anchor, false)}
 			onKeyDown={toggleDrawer(anchor, false)}
 		>
-			<List sx={{ paddingTop: 0, paddingBottom: 0 }}>
+			<List sx={{ paddingTop: 4, paddingBottom: 0 }}>
+				<ListItem disablePadding>
+					<AdbIcon sx={{ height: '40px', display: 'block', margin: 'auto', color: 'primary.white', fontSize: 40 }} />
+				</ListItem>
+
 				{instructionSub.map(page => (
 					<ListItem key={page.link} disablePadding>
 						<ListItemButton>
@@ -161,6 +165,24 @@ function ResponsiveAppBar() {
 						</Link>
 					</ListItemButton>
 				</ListItem>
+				{suppliesSub.map(page => (
+					<ListItem key={page.link} disablePadding>
+						<ListItemButton>
+							<ListItemIcon
+								sx={{
+									minWidth: '40px',
+								}}
+								color='primary.white'
+							>
+								{1 % 2 === 0 ? <InboxIcon /> : <MailIcon color='white' />}
+							</ListItemIcon>
+
+							<Link to={page.link} className={styles.navigateLink}>
+								{page.name}
+							</Link>
+						</ListItemButton>
+					</ListItem>
+				))}
 				{pages.map(page => (
 					<ListItem key={page.link} disablePadding>
 						<ListItemButton>
