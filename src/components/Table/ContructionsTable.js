@@ -45,7 +45,9 @@ export default function StickyHeadTable(props) {
 	};
 	const rows = props.rows;
 	function TableAction(data) {
-		return (
+		return columns ? (
+			<></>
+		) : (
 			<>
 				<IconButton
 					aria-label='more'
