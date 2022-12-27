@@ -45,14 +45,10 @@ export default function StickyHeadTable(props) {
 	};
 	const rows = props.rows;
 	function TableAction(data) {
-		return columns ? (
-			<></>
-		) : (
+		return (
 			<>
 				<IconButton
 					aria-label='more'
-					id='long-button'
-					aria-controls={selectedData && data.name === selectedData.name ? 'long-menu' : undefined}
 					aria-expanded={selectedData && data.name === selectedData.name ? 'true' : undefined}
 					aria-haspopup='true'
 					onClick={e => {
