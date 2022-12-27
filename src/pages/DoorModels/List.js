@@ -1,22 +1,58 @@
 import DoorModelsTable from '../../components/Table/DoorModelsTable';
 import { useState, useEffect } from 'react';
 
+import { useTheme } from '@mui/material/styles';
 import Pagination from '../../components/Shared/Pagination';
+import PropTypes from 'prop-types';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import SwipeableViews from 'react-swipeable-views';
+
 import { Link } from 'react-router-dom';
 import CreateNewDoorModels from '../../components/Dialog/CreateNewDoorModels';
+
+function TabPanel(props) {
+	const { children, value, index, ...other } = props;
+
+	return (
+		<div
+			role='tabpanel'
+			hidden={value !== index}
+			id={`simple-tabpanel-${index}`}
+			aria-labelledby={`simple-tab-${index}`}
+			{...other}
+		>
+			{children}
+		</div>
+	);
+}
+
+TabPanel.propTypes = {
+	children: PropTypes.node,
+	index: PropTypes.number.isRequired,
+	value: PropTypes.number.isRequired,
+};
+
 export default function ConstructionsList() {
 	function createData(name, code, population, size) {
 		const density = population / size;
 		return { name, code, population, size, density };
 	}
 
+	const theme = useTheme();
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPage, setTotalPage] = useState(2);
+	const [value, setValue] = useState(0);
 	const [openDialogCreate, setOpenDialogCreate] = useState(false);
-
+	const handleChangeTab = (event, newValue) => {
+		setValue(newValue);
+	};
+	const handleChangeIndex = index => {
+		setValue(index);
+	};
 	const rows = [
 		createData('India', 'IN', 1324171354, 3287263),
 		createData('China', 'CN', 1403500365, 9596961),
@@ -88,8 +124,35 @@ export default function ConstructionsList() {
 					</Grid>
 				</Grid>
 			</div>
+			<div className='listTabs'>
+				<Tabs
+					value={value}
+					onChange={handleChangeTab}
+					indicatorColor='secondary'
+					textColor='inherit'
+					variant='standard'
+				>
+					<Tab label='Cửa đi' />
+					<Tab label='Cửa sổ' />
+					<Tab label='Vách' />
+				</Tabs>
+			</div>
 
-			<DoorModelsTable rows={rows} />
+			<SwipeableViews
+				axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+				index={value}
+				onChangeIndex={handleChangeIndex}
+			>
+				<TabPanel value={value} index={0} dir={theme.direction}>
+					<DoorModelsTable rows={rows} />
+				</TabPanel>
+				<TabPanel value={value} index={1} dir={theme.direction}>
+					<DoorModelsTable rows={rows.slice(2, 5)} />
+				</TabPanel>
+				<TabPanel value={value} index={2} dir={theme.direction}>
+					<DoorModelsTable rows={rows.slice(-8)} />
+				</TabPanel>
+			</SwipeableViews>
 
 			{/* <button
 				onClick={() => {
