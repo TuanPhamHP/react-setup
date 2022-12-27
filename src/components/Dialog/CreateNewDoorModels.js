@@ -23,6 +23,7 @@ const defaultFormData = {
 const doorImgStyle = {
 	maxWidth: '100%',
 	width: '100%',
+	maxHeight: '400px',
 	aspectRatio: 2 / 3,
 	objectFit: 'cover',
 	borderRadius: '4px',
@@ -104,7 +105,7 @@ export default function FormDialog(props) {
 				<DialogTitle>Thêm mẫu cửa</DialogTitle>
 				<DialogContent>
 					<Grid container spacing={{ xs: 2, md: 2 }}>
-						<Grid item={true} xs={4} md={3}>
+						<Grid item={true} columns={12} xs={12} sm={4} md={3}>
 							<div style={{ marginBottom: '12px' }}>
 								<TextField
 									error={!!formError.name}
@@ -155,7 +156,7 @@ export default function FormDialog(props) {
 								/>
 							</div>
 						</Grid>
-						<Grid item={true} xs={8} md={9}>
+						<Grid item={true} columns={12} xs={12} sm={8} md={9}>
 							<div style={{ marginBottom: '12px' }}>
 								<Autocomplete
 									{...defaultProps}
