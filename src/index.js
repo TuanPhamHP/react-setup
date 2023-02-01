@@ -19,7 +19,7 @@ import DefaultLayout from './layouts/DefaultLayout';
 import App from './App';
 import Home from './pages/Home';
 import HomeDetail from './pages/HomeDetail';
-import Login from './pages/Loggin';
+import Login from './pages/Login';
 import Error from './pages/Error';
 import {
 	createBrowserRouter,
@@ -50,7 +50,7 @@ const ProtectedRoute = ({ redirectPath = '/login', children }) => {
 
 		try {
 			if (res.status && res.status > 199 && res.status < 400) {
-				dispatch(setUser(res.data.data.user));
+				dispatch(setUser(res.data.data));
 				return children ? children : <Outlet />;
 			} else {
 				dispatch(setUser(null));

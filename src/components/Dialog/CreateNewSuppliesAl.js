@@ -7,51 +7,44 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
-import Slide from '@mui/material/Slide';
-import { useNavigate } from 'react-router';
 import styles from '../../assets/styles/DoorSet.module.scss';
 import { getErrorMessage } from '../../helpers/FormatnParse';
+import { useSnackbar } from 'notistack';
+import api from '../../services/index';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-	return <Slide direction='up' ref={ref} {...props} />;
-});
+import { useSelector } from 'react-redux';
+import { selectInternal } from '../../store/internal';
 
 const defaultFormData = {
 	name: '',
-	unit: null,
-	type: null,
+	system: null,
+	style: null,
 	price: '',
 	density: '',
 };
 
 export default function FormDialog(props) {
+	const internal = useSelector(selectInternal);
+	const { enqueueSnackbar } = useSnackbar();
 	const [open, setOpen] = React.useState(props.openDialogCreate);
 	const [formError, setFormError] = React.useState({});
 	const [loadingCreate, setLoadingCreate] = React.useState(false);
 	const [formData, setFormData] = React.useState({ ...defaultFormData });
-	const top100Films = [
-		{ title: 'The Shawshank Redemption', year: 1994 },
-		{ title: 'The Godfather', year: 1972 },
-		{ title: 'The Godfather: Part II', year: 1974 },
-		{ title: 'The Dark Knight', year: 2008 },
-		{ title: '12 Angry Men', year: 1957 },
-		{ title: "Schindler's List", year: 1993 },
-		{ title: 'Pulp Fiction', year: 1994 },
-	];
+	const alStylesOption = internal.listAlStyles;
+	const alSystemOption = internal.listAlSystems;
 	const defaultProps = {
-		options: top100Films,
-		getOptionLabel: option => option.title,
+		getOptionLabel: option => option.name,
 	};
-	const changeUnit = (e, data) => {
+	const changeSystem = (e, data) => {
 		console.log(data);
-		setFormData({ ...formData, unit: data });
+		setFormData({ ...formData, system: data });
 	};
-	const changeType = (e, data) => {
+	const changeStyle = (e, data) => {
 		console.log(data);
-		setFormData({ ...formData, type: data });
+		setFormData({ ...formData, style: data });
 	};
 
-	const handleFormDataInput = (e, field) => {
+	const handleFormDataInput = (e, field, type = 'string') => {
 		setFormData({ ...formData, [field]: e.target.value });
 	};
 	const handleClickOpen = () => {
@@ -61,17 +54,17 @@ export default function FormDialog(props) {
 		setFormError({});
 		setFormData({ ...defaultFormData });
 	};
-	const handleCreate = () => {
+	const handleCreate = async () => {
 		setLoadingCreate(true);
 		let objError = {};
 		if (!formData.name || !String(formData.name).trim()) {
 			objError = { ...objError, name: 'required' };
 		}
-		if (!formData.unit) {
-			objError = { ...objError, unit: 'required' };
+		if (!formData.style) {
+			objError = { ...objError, style: 'required' };
 		}
-		if (!formData.type) {
-			objError = { ...objError, type: 'required' };
+		if (!formData.system) {
+			objError = { ...objError, system: 'required' };
 		}
 		if (!formData.price || !String(formData.price).trim()) {
 			objError = { ...objError, price: 'required' };
@@ -85,10 +78,31 @@ export default function FormDialog(props) {
 			setLoadingCreate(false);
 			return;
 		}
-		setTimeout(() => {
-			props.setOpenDialogCreate(false);
-			setLoadingCreate(false);
-		}, 2000);
+		const body = {
+			name: formData.name,
+			density: formData.density,
+			price: formData.price,
+			aluminum_style_id: formData.style.id,
+			aluminum_system_id: formData.system.id,
+		};
+		const res = await api.aluminum.create(body);
+		setLoadingCreate(false);
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi tạo vật liệu nhôm', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399 || res.status < 200) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				enqueueSnackbar('Tạo mới thành công', { variant: 'success' });
+				props.getListData();
+				props.setOpenDialogCreate(false);
+			}
+		} catch (error) {
+			enqueueSnackbar(`Có lỗi khi lấy danh sách kiểu nhôm: ${error}`, { variant: 'error' });
+		}
+
 		// navigate('/cong-trinh/them-moi');
 	};
 
@@ -134,16 +148,17 @@ export default function FormDialog(props) {
 
 						<Autocomplete
 							{...defaultProps}
-							onChange={changeUnit}
+							options={alSystemOption}
+							onChange={changeSystem}
 							disableClearable
 							noOptionsText='Không có kết quả phù hợp'
-							value={formData.unit}
-							isOptionEqualToValue={(option, value) => option.title === value.title}
+							value={formData.system}
+							isOptionEqualToValue={(option, value) => option.name === value.name}
 							renderInput={params => (
 								<TextField
 									{...params}
-									error={!!formError.unit}
-									helperText={getErrorMessage(formError.unit)}
+									error={!!formError.system}
+									helperText={getErrorMessage(formError.system)}
 									placeholder='Hệ'
 									variant='outlined'
 									size='small'
@@ -156,16 +171,17 @@ export default function FormDialog(props) {
 
 						<Autocomplete
 							{...defaultProps}
-							onChange={changeType}
+							options={alStylesOption}
+							onChange={changeStyle}
 							disableClearable
 							noOptionsText='Không có kết quả phù hợp'
-							value={formData.type}
-							isOptionEqualToValue={(option, value) => option.title === value.title}
+							value={formData.style}
+							isOptionEqualToValue={(option, value) => option.name === value.name}
 							renderInput={params => (
 								<TextField
 									{...params}
-									error={!!formError.type}
-									helperText={getErrorMessage(formError.type)}
+									error={!!formError.style}
+									helperText={getErrorMessage(formError.style)}
 									placeholder='Kiểu loại'
 									variant='outlined'
 									size='small'

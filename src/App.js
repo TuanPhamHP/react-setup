@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import './assets/styles/App.scss';
 
@@ -9,7 +8,9 @@ import LayoutStyles from './assets/styles/Layout.module.scss';
 // Redux
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setToken, setUser, selectUser } from './store/userAuth';
+import { setUser, selectUser } from './store/userAuth';
+import { setListAlStyles, setListAlSystems } from './store/internal';
+import { useSnackbar } from 'notistack';
 import api from './services/index';
 
 // Route & Pages
@@ -30,7 +31,7 @@ import SuppliesExtra from './pages/Supplies/Extra';
 
 import EmployeesList from './pages/Employees/List';
 
-import Login from './pages/Loggin';
+import Login from './pages/Login';
 import Error from './pages/Error';
 import NoMatch from './pages/NoMatch';
 import { BrowserRouter as Router, Route, Routes, Navigate, Outlet, useNavigate, useLocation } from 'react-router-dom';
@@ -46,7 +47,46 @@ import '@fontsource/roboto/700.css';
 import { useEffect } from 'react';
 function App() {
 	const authUser = useSelector(selectUser);
-
+	const { enqueueSnackbar } = useSnackbar();
+	const dispatch = useDispatch();
+	const getListAlStyles = async () => {
+		const res = await api.aluminum.getListAlStyles({ pagination: false });
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi lấy danh sách kiểu nhôm', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				dispatch(setListAlStyles(res.data.data));
+			}
+		} catch (error) {
+			enqueueSnackbar(`Có lỗi khi lấy danh sách kiểu nhôm: ${error}`, { variant: 'error' });
+		}
+	};
+	const getListAlSystems = async () => {
+		const res = await api.aluminum.getListAlSystems({ pagination: false });
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi lấy danh sách kiểu nhôm', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				dispatch(setListAlSystems(res.data.data));
+			}
+		} catch (error) {
+			enqueueSnackbar(`Có lỗi khi lấy danh sách kiểu nhôm: ${error}`, { variant: 'error' });
+		}
+	};
+	useEffect(() => {
+		if (authUser.user) {
+			getListAlStyles();
+			getListAlSystems();
+		}
+	}, [authUser]);
 	const ProtectedRoute = ({ expectedPath, redirectPath = '/login', children }) => {
 		const currentToken = getCookie('token', true) || getSession('token', true);
 		const dispatch = useDispatch();
@@ -58,26 +98,14 @@ function App() {
 
 			if (!res) {
 				console.log('Đăng nhập thất bại. Liên hệ IT để được hỗ trợ. Code 01');
-				if (token === 'randomedToken') {
-					const fakeResult = {
-						name: 'Admin',
-						phone: '0989898989',
-						email: 'admin@gmail.com',
-						avatar: null,
-						token: 'randomedToken',
-					};
-					dispatch(setUser(fakeResult));
-					dispatch(setToken(fakeResult.token));
-					navigate(location.pathname || '/cong-trinh');
-					return;
-				}
+
 				navigate(redirectPath);
 				return;
 			}
 
 			try {
 				if (res.status && res.status > 199 && res.status < 400) {
-					dispatch(setUser(res.data.data.user));
+					dispatch(setUser({ ...res.data.data, token }));
 					return children ? children : <Outlet />;
 				} else {
 					dispatch(setUser(null));
@@ -90,21 +118,7 @@ function App() {
 				const msg = 'Đăng nhập thất bại: ' + String(error) + ' Code 03';
 
 				console.log(msg);
-				if (token === 'randomedToken') {
-					const fakeResult = {
-						name: 'Admin',
-						phone: '0989898989',
-						email: 'admin@gmail.com',
-						avatar: null,
-						token: 'randomedToken',
-					};
 
-					dispatch(setUser(fakeResult));
-					dispatch(setToken(fakeResult.token));
-
-					navigate(location.pathname || '/cong-trinh');
-					return;
-				}
 				navigate(redirectPath);
 				return;
 			}

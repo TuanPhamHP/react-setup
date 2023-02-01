@@ -120,6 +120,24 @@
 	opacity: 0.5;
 	pointer-events: none;
 }
+.border-top {
+	border-top: 1px solid #e7e5e5 !important;
+}
+.border-left {
+	border-left: 1px solid #e7e5e5 !important;
+}
+.border-bottom {
+	border-bottom: 1px solid #e7e5e5 !important;
+}
+.border-right {
+	border-right: 1px solid #e7e5e5 !important;
+}
+.border-all {
+	border: 1px solid #e7e5e5 !important;
+}
+.border-bottom--dash {
+	border-bottom: 1px dashed #e7e5e5 !important;
+}
 .pointer {
 	cursor: pointer !important;
 }

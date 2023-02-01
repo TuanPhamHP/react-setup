@@ -1,12 +1,12 @@
 import ContructionsTable from '../../components/Table/ContructionsTable';
 import { useState, useEffect } from 'react';
+import api from '../../services/index';
 
 import Pagination from '../../components/Shared/Pagination';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import { Link } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 import CreateNewConstruction from '../../components/Dialog/CreateNewConstruction';
 const defaultFilter = {
 	search: '',
@@ -23,6 +23,7 @@ export default function ConstructionsList() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPage, setTotalPage] = useState(2);
 	const [openDialogCreate, setOpenDialogCreate] = useState(false);
+	const { enqueueSnackbar } = useSnackbar();
 
 	const rows = [
 		createData('India', '0987789981', 'Đã hoàn thành', 3287263),
@@ -37,12 +38,21 @@ export default function ConstructionsList() {
 		createData('Japan', '0987789990', 'Đã hoàn thành', 377973),
 	];
 
-	const getListData = () => {
+	const getListData = async () => {
 		setDataLoading(true);
-		setTimeout(() => {
-			setFirstDataLoading(false);
-			setDataLoading(false);
-		}, 700);
+		const res = await api.template.getListData();
+
+		setFirstDataLoading(false);
+		setDataLoading(false);
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi lấy danh sách dữ liệu', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			}
+		} catch (error) {}
 	};
 	const submitFormSearch = e => {
 		e.preventDefault();
@@ -56,7 +66,9 @@ export default function ConstructionsList() {
 		getListData();
 	}, []);
 	useEffect(() => {
-		getListData();
+		if (!firstDataLoading) {
+			getListData();
+		}
 	}, [currentPage]);
 	return (
 		<div className='page-container'>

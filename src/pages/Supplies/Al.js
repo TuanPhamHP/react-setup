@@ -1,11 +1,12 @@
 import SuppliesAlTable from '../../components/Table/SuppliesAlTable';
 import { useState, useEffect } from 'react';
+import api from '../../services/index';
 
 import Pagination from '../../components/Shared/Pagination';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 import CreateNewSuppliesAl from '../../components/Dialog/CreateNewSuppliesAl';
 export default function ConstructionsList() {
 	function createData(name, code, population, size) {
@@ -15,31 +16,50 @@ export default function ConstructionsList() {
 
 	const [firstDataLoading, setFirstDataLoading] = useState(true);
 	const [dataLoading, setDataLoading] = useState(true);
+	const [listData, setListData] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [totalPage, setTotalPage] = useState(2);
+	const [totalPage, setTotalPage] = useState(1);
 	const [openDialogCreate, setOpenDialogCreate] = useState(false);
+	const { enqueueSnackbar } = useSnackbar();
 
-	const rows = [createData('India', 'IN', 1324171354, 3287263), createData('China', 'CN', 1403500365, 9596961)];
-
-	const getListData = () => {
+	const getListData = async () => {
 		setDataLoading(true);
-		setTimeout(() => {
-			setFirstDataLoading(false);
-			setDataLoading(false);
-		}, 700);
+		const res = await api.aluminum.getListData({ page: 1, per_page: 15 });
+
+		setFirstDataLoading(false);
+		setDataLoading(false);
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi lấy danh sách dữ liệu', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				setListData(res.data.data);
+				setTotalPage(1);
+			}
+		} catch (error) {}
+		// console.log(res);
 	};
 	useEffect(() => {
 		getListData();
 	}, []);
 	useEffect(() => {
-		getListData();
+		if (!firstDataLoading) {
+			getListData();
+		}
 	}, [currentPage]);
 	return (
 		<div className='page-container'>
 			<div className='page-header'>
 				<h1 className='page-title'>Danh sách vật tư Nhôm</h1>
 			</div>
-			<CreateNewSuppliesAl openDialogCreate={openDialogCreate} setOpenDialogCreate={setOpenDialogCreate} />
+			<CreateNewSuppliesAl
+				openDialogCreate={openDialogCreate}
+				setOpenDialogCreate={setOpenDialogCreate}
+				getListData={getListData}
+			/>
 			<div className='page-filter'>
 				<Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 12, md: 12 }}>
 					<Grid item={true} xs={8} md={4}>
@@ -94,7 +114,7 @@ export default function ConstructionsList() {
 				</Grid>
 			</div>
 
-			<SuppliesAlTable rows={rows} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
+			<SuppliesAlTable rows={listData} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
 			<div className='' style={{ display: 'flex', justifyContent: 'flex-end' }}>
 				<Pagination page={currentPage} setCurrentPage={setCurrentPage} total={totalPage} setTotalPage={setTotalPage} />
 			</div>

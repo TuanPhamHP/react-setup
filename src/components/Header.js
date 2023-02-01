@@ -311,7 +311,7 @@ function ResponsiveAppBar() {
 						</Menu>
 						<MenuItem
 							onClick={handleCloseNavMenu}
-							sx={isActiveNav({ name: 'Mẫu cửa', link: '/mau-cua', active: ['/mau-cua'] })}
+							sx={{ ...isActiveNav({ name: 'Mẫu cửa', link: '/mau-cua', active: ['/mau-cua'] }), padding: '10px 12px' }}
 						>
 							<Link to={'/mau-cua'} className={styles.navigateLink}>
 								Mẫu cửa
@@ -326,7 +326,7 @@ function ResponsiveAppBar() {
 									link: '/vat-tu',
 									active: ['/vat-tu', '/vat-tu/nhom', '/vat-tu/kinh', '/vat-tu/phu-kien', '/vat-tu/vat-tu-phu'],
 								}),
-								padding: '10px 24px',
+								padding: '10px 12px',
 							}}
 						>
 							Vật tư
@@ -362,7 +362,11 @@ function ResponsiveAppBar() {
 							))}
 						</Menu>
 						{pages.map(page => (
-							<MenuItem key={page.name} onClick={handleCloseNavMenu} sx={isActiveNav(page)}>
+							<MenuItem
+								key={page.name}
+								onClick={handleCloseNavMenu}
+								sx={{ ...isActiveNav(page), padding: '10px 12px' }}
+							>
 								<Link to={page.link} className={styles.navigateLink}>
 									{page.name}
 								</Link>

@@ -10,8 +10,7 @@ import Button from '@mui/material/Button';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import SwipeableViews from 'react-swipeable-views';
-
-import { Link } from 'react-router-dom';
+import styles from '../../assets/styles/ListDoor.module.scss';
 import CreateNewDoorModels from '../../components/Dialog/CreateNewDoorModels';
 
 function TabPanel(props) {
@@ -124,7 +123,7 @@ export default function ConstructionsList() {
 					</Grid>
 				</Grid>
 			</div>
-			<div className='listTabs'>
+			<div className={`${styles.listTabs} border-bottom `} style={{ margin: 2 }}>
 				<Tabs
 					value={value}
 					onChange={handleChangeTab}
@@ -132,7 +131,7 @@ export default function ConstructionsList() {
 					textColor='inherit'
 					variant='standard'
 				>
-					<Tab label='Cửa đi' />
+					<Tab label='Cửa đi' color='primary' />
 					<Tab label='Cửa sổ' />
 					<Tab label='Vách' />
 				</Tabs>

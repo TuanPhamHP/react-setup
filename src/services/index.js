@@ -1,5 +1,8 @@
 import axios from 'axios';
 import user from './user';
+import template from './template';
+import aluminum from './aluminum';
+import glass from './glass';
 
 import { deleteCookie } from '../helpers/customizeCookie';
 const onCatch = err => {
@@ -18,6 +21,9 @@ const onCatch = err => {
 const services = (axios => {
 	return {
 		user: user(axios),
+		template: template(axios),
+		aluminum: aluminum(axios),
+		glass: glass(axios),
 	};
 })(axios);
 export default services;

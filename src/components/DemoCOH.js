@@ -51,7 +51,7 @@ export default function SideBar() {
 			<p>
 				{' '}
 				<small>
-					You are running this application in <b>{process.env.REACT_APP_NOT_SECRET_CODE}</b> mode.
+					You are running this application in <b>{process.env.REACT_APP_API_BASE_URL}</b> mode.
 				</small>
 			</p>
 			<p>{count}</p>

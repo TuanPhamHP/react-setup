@@ -22,6 +22,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router';
+import api from '../services/index';
 
 // helpers
 import { setSession } from '../helpers/customizeSession';
@@ -74,7 +75,7 @@ export default function FullWidthTabs() {
 	const [value, setValue] = useState(0);
 	const [rememberMe, setRememberMe] = useState(true);
 	const [showPassword, setShowPassword] = useState(false);
-	const [formLogin, setFormLogin] = useState({ email: '', password: '' });
+	const [formLogin, setFormLogin] = useState({ username: '', password: '' });
 	const [formRegistration, setFormRegistration] = useState({ name: '', email: '', password: '' });
 	const [formError, setFormError] = useState({});
 	const [formErrorRegis, setFormErrorRegis] = useState({});
@@ -144,12 +145,12 @@ export default function FullWidthTabs() {
 			setLoadingLogin(false);
 		}, 2000);
 	};
-	const handleLogin = () => {
+	const handleLogin = async () => {
 		setFormError({});
 		setLoadingLogin(true);
 		let objError = {};
-		if (!String(formLogin.email).trim()) {
-			objError = { ...objError, email: 'required' };
+		if (!String(formLogin.username).trim()) {
+			objError = { ...objError, username: 'required' };
 		}
 		if (!String(formLogin.password).trim()) {
 			objError = { ...objError, password: 'required' };
@@ -159,35 +160,72 @@ export default function FullWidthTabs() {
 			setLoadingLogin(false);
 			return;
 		}
-		setTimeout(() => {
-			if (formLogin.email === 'admin@gmail.com' && formLogin.password === '123456') {
-				const fakeResult = {
-					name: 'Admin',
-					phone: '0989898989',
-					email: 'admin@gmail.com',
-					avatar: null,
-					token: 'randomedToken',
-				};
+		const body = {
+			username: formLogin.username,
+			password: formLogin.password,
+		};
+		const res = await api.user.loginUser(body);
+		setLoadingLogin(false);
+		if (!res) {
+			enqueueSnackbar('Đăng nhập thất bại. Liên hệ IT để được hỗ trợ. Code 01', { variant: 'error' });
+		}
+		try {
+			if (res.status && res.status > 199 && res.status < 400) {
+				console.log(res);
+				const dataObj = res.data.data;
 				if (rememberMe) {
-					setCookie('email', String(formLogin.email).trim(), 30, true);
+					setCookie('email', String(formLogin.username).trim(), 30, true);
 					setCookie('password', String(formLogin.password).trim(), 30, true);
-					setCookie('token', String(fakeResult.token).trim(), 30, true);
+					setCookie('token', String(dataObj.access_token).trim(), 30, true);
 				} else {
 					deleteCookie('email');
 					deleteCookie('password');
 					deleteCookie('token');
 				}
 
-				setSession('token', String(fakeResult.token).trim(), true);
-				dispatch(setUser(fakeResult));
-				dispatch(setToken(fakeResult.token));
+				setSession('token', String(dataObj.access_token).trim(), true);
+				dispatch(setUser(dataObj.user));
+				dispatch(setToken(dataObj.access_token));
 				setLoadingLogin(false);
 				navigate('/');
 				return;
+			} else {
+				const msg = 'Đăng nhập thất bại: ' + (res.data.message || String(res)) + ' Code 02';
+				enqueueSnackbar(msg, { variant: 'error' });
 			}
-			enqueueSnackbar('Thông tin đăng nhập không chính xác. Vui lòng thử lại', { variant: 'error' });
-			setLoadingLogin(false);
-		}, 2000);
+		} catch (error) {
+			const msg = 'Đăng nhập thất bại: ' + String(error) + ' Code 03';
+			console.log(msg);
+		}
+		// setTimeout(() => {
+		// 	if (formLogin.username === 'admin@gmail.com' && formLogin.password === '123456') {
+		// 		const fakeResult = {
+		// 			name: 'Admin',
+		// 			phone: '0989898989',
+		// 			email: 'admin@gmail.com',
+		// 			avatar: null,
+		// 			token: 'randomedToken',
+		// 		};
+		// 		if (rememberMe) {
+		// 			setCookie('email', String(formLogin.username).trim(), 30, true);
+		// 			setCookie('password', String(formLogin.password).trim(), 30, true);
+		// 			setCookie('token', String(fakeResult.token).trim(), 30, true);
+		// 		} else {
+		// 			deleteCookie('email');
+		// 			deleteCookie('password');
+		// 			deleteCookie('token');
+		// 		}
+
+		// 		setSession('token', String(fakeResult.token).trim(), true);
+		// 		dispatch(setUser(fakeResult));
+		// 		dispatch(setToken(fakeResult.token));
+		// 		setLoadingLogin(false);
+		// 		navigate('/');
+		// 		return;
+		// 	}
+		// 	enqueueSnackbar('Thông tin đăng nhập không chính xác. Vui lòng thử lại', { variant: 'error' });
+		// 	setLoadingLogin(false);
+		// }, 2000);
 	};
 	const handleLoginKeyup = event => {
 		event.preventDefault();
@@ -239,14 +277,14 @@ export default function FullWidthTabs() {
 							<div className='d-flex flex-column'>
 								<FormControl fullWidth={true} sx={{ m: '12px 0', p: 0 }} variant='outlined'>
 									<TextField
-										error={!!formError.email}
-										helperText={getErrorMessage(formError.email)}
+										error={!!formError.username}
+										helperText={getErrorMessage(formError.username)}
 										type='text'
 										placeholder='Tài khoản'
 										label='Tài khoản'
-										value={formLogin.email}
+										value={formLogin.username}
 										onChange={e => {
-											handlerFormLoginInput(e, 'email');
+											handlerFormLoginInput(e, 'username');
 										}}
 										fullWidth={true}
 									/>

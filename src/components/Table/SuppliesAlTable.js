@@ -12,7 +12,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import styles from '../../assets/styles/Table.module.scss';
 const columns = [
 	{ id: 'name', label: 'Tên', minWidth: 170 },
-	{ id: 'code', label: 'Hệ', minWidth: 100 },
+	{ id: 'aluminum_style_id', label: 'Hệ', minWidth: 100 },
 	{
 		id: 'population',
 		label: 'Giá',
@@ -21,21 +21,21 @@ const columns = [
 		format: value => value.toLocaleString('en-US'),
 	},
 	{
-		id: 'size',
+		id: 'density',
 		label: 'Tỉ trọng',
 		minWidth: 170,
 		align: 'right',
 		format: value => value.toLocaleString('en-US'),
 	},
 	{
-		id: 'density',
+		id: 'price',
 		label: 'Giá nhập',
 		minWidth: 170,
 		align: 'right',
-		format: value => value.toFixed(2),
+		format: value => value.toFixed(2) || '---',
 	},
 	{
-		id: 'fk',
+		id: 'aluminum_system_id',
 		label: 'Loại',
 		minWidth: 170,
 		align: 'right',
@@ -75,7 +75,7 @@ export default function StickyHeadTable(props) {
 								<>
 									{rows.map(row => {
 										return (
-											<TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
+											<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
 												{columns.map(column => {
 													const value = row[column.id];
 													return (
