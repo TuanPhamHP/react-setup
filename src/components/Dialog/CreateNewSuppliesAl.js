@@ -11,10 +11,30 @@ import styles from '../../assets/styles/DoorSet.module.scss';
 import { getErrorMessage } from '../../helpers/FormatnParse';
 import { useSnackbar } from 'notistack';
 import api from '../../services/index';
+import NumberFormat from 'react-number-format';
 
 import { useSelector } from 'react-redux';
 import { selectInternal } from '../../store/internal';
+function NumberFormatCustom(props) {
+	const { inputRef, onChange, ...other } = props;
 
+	return (
+		<NumberFormat
+			{...other}
+			getInputRef={inputRef}
+			onValueChange={values => {
+				onChange({
+					target: {
+						name: props.name,
+						value: values.value,
+					},
+				});
+			}}
+			thousandSeparator
+			// isNumericString
+		/>
+	);
+}
 const defaultFormData = {
 	name: '',
 	system: null,
@@ -80,8 +100,8 @@ export default function FormDialog(props) {
 		}
 		const body = {
 			name: formData.name,
-			density: formData.density,
-			price: formData.price,
+			density: +formData.density,
+			price: +formData.price,
 			aluminum_style_id: formData.style.id,
 			aluminum_system_id: formData.system.id,
 		};
@@ -200,7 +220,9 @@ export default function FormDialog(props) {
 							onChange={e => {
 								handleFormDataInput(e, 'density');
 							}}
-							type='number'
+							InputProps={{
+								inputComponent: NumberFormatCustom,
+							}}
 							fullWidth
 							variant='outlined'
 							size='small'
