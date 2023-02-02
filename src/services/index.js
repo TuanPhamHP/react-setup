@@ -3,6 +3,8 @@ import user from './user';
 import template from './template';
 import aluminum from './aluminum';
 import glass from './glass';
+import supply from './supply';
+import accessory from './accessory';
 
 import { deleteCookie } from '../helpers/customizeCookie';
 const onCatch = err => {
@@ -24,6 +26,8 @@ const services = (axios => {
 		template: template(axios),
 		aluminum: aluminum(axios),
 		glass: glass(axios),
+		supply: supply(axios),
+		accessory: accessory(axios),
 	};
 })(axios);
 export default services;

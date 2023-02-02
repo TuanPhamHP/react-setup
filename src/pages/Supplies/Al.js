@@ -9,11 +9,6 @@ import Button from '@mui/material/Button';
 import { useSnackbar } from 'notistack';
 import CreateNewSuppliesAl from '../../components/Dialog/CreateNewSuppliesAl';
 export default function ConstructionsList() {
-	function createData(name, code, population, size) {
-		const density = population / size;
-		return { name, code, population, size, density };
-	}
-
 	const [firstDataLoading, setFirstDataLoading] = useState(true);
 	const [dataLoading, setDataLoading] = useState(true);
 	const [listData, setListData] = useState([]);

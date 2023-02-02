@@ -12,20 +12,20 @@ import LinearProgress from '@mui/material/LinearProgress';
 import styles from '../../assets/styles/Table.module.scss';
 const columns = [
 	{ id: 'name', label: 'Tên', minWidth: 170 },
-	{ id: 'code', label: 'Mẫu cửa', minWidth: 100 },
+	{ id: 'unit', label: 'Mẫu cửa', minWidth: 100 },
 	{
-		id: 'population',
+		id: 'entry_price',
 		label: 'Giá nhập',
 		minWidth: 170,
 		align: 'right',
 		format: value => value.toLocaleString('en-US'),
 	},
 	{
-		id: 'ps',
+		id: 'profit_coefficient',
 		label: 'Tỉ suất lợi nhuận',
 		minWidth: 170,
 		align: 'right',
-		format: () => '10%',
+		format: value => value + '%',
 	},
 ];
 
@@ -53,7 +53,9 @@ export default function StickyHeadTable(props) {
 									</TableCell>
 								</TableRow>
 							) : (
-								<></>
+								<TableRow>
+									<></>
+								</TableRow>
 							)}
 							{props.onLoadData && props.isFirstLoad ? (
 								<TBodyLoader key='1' count={columns.length || 3} />
@@ -61,18 +63,18 @@ export default function StickyHeadTable(props) {
 								<>
 									{rows.map(row => {
 										return (
-											<TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
+											<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
 												{columns.map(column => {
 													const value = row[column.id];
 													return (
 														<TableCell key={column.id} align={column.align} sx={{ color: 'text.black' }}>
-															{column.format && typeof value === 'number' ? column.format(value) : value}
+															{column.format ? column.format(value) : value}
 														</TableCell>
 													);
 												})}
 											</TableRow>
 										);
-									})}{' '}
+									})}
 								</>
 							)}
 						</TableBody>

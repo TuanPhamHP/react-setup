@@ -5,16 +5,12 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import Slide from '@mui/material/Slide';
-import { useNavigate } from 'react-router';
 import styles from '../../assets/styles/DoorSet.module.scss';
 import { getErrorMessage } from '../../helpers/FormatnParse';
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-	return <Slide direction='up' ref={ref} {...props} />;
-});
+import { useSnackbar } from 'notistack';
+import api from '../../services/index';
 
 const defaultFormData = {
 	name: '',
@@ -23,39 +19,20 @@ const defaultFormData = {
 };
 
 export default function FormDialog(props) {
+	const { enqueueSnackbar } = useSnackbar();
 	const [open, setOpen] = React.useState(props.openDialogCreate);
 	const [formError, setFormError] = React.useState({});
 	const [loadingCreate, setLoadingCreate] = React.useState(false);
 	const [formData, setFormData] = React.useState({ ...defaultFormData });
-	const top100Films = [
-		{ title: 'The Shawshank Redemption', year: 1994 },
-		{ title: 'The Godfather', year: 1972 },
-		{ title: 'The Godfather: Part II', year: 1974 },
-		{ title: 'The Dark Knight', year: 2008 },
-		{ title: '12 Angry Men', year: 1957 },
-		{ title: "Schindler's List", year: 1993 },
-		{ title: 'Pulp Fiction', year: 1994 },
-	];
-	const defaultProps = {
-		options: top100Films,
-		getOptionLabel: option => option.title,
-	};
-	const changeUnit = (e, data) => {
-		console.log(data);
-		setFormData({ ...formData, unit: data });
-	};
 
 	const handleFormDataInput = (e, field) => {
 		setFormData({ ...formData, [field]: e.target.value });
-	};
-	const handleClickOpen = () => {
-		props.setOpenDialogCreate(true);
 	};
 	const clearData = () => {
 		setFormError({});
 		setFormData({ ...defaultFormData });
 	};
-	const handleCreate = () => {
+	const handleCreate = async () => {
 		setLoadingCreate(true);
 		let objError = {};
 		if (!String(formData.name).trim()) {
@@ -72,16 +49,28 @@ export default function FormDialog(props) {
 			setLoadingCreate(false);
 			return;
 		}
-		setTimeout(() => {
-			props.handleCreateNewData({
-				name: formData.name,
-				code: formData.thickness,
-				population: formData.price,
-				size: 1,
-			});
-			props.setOpenDialogCreate(false);
-			setLoadingCreate(false);
-		}, 2000);
+		const body = {
+			name: formData.name,
+			thickness: +formData.thickness,
+			price: +formData.price,
+		};
+		const res = await api.glass.create(body);
+		setLoadingCreate(false);
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi tạo vật liệu kính', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399 || res.status < 200) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				enqueueSnackbar('Tạo mới thành công', { variant: 'success' });
+				props.getListData();
+				props.setOpenDialogCreate(false);
+			}
+		} catch (error) {
+			enqueueSnackbar(`Có lỗi khi lấy danh sách kính: ${error}`, { variant: 'error' });
+		}
 		// navigate('/cong-trinh/them-moi');
 	};
 

@@ -3,7 +3,7 @@ const userRepo = axios => {
 	return {
 		getListData(payload = {}) {
 			return axios
-				.get(`${REACT_APP_API_BASE_URL}/glasses`, {
+				.get(`${REACT_APP_API_BASE_URL}/accessories`, {
 					params: payload,
 				})
 				.then(res => {
@@ -15,7 +15,7 @@ const userRepo = axios => {
 		},
 		create(payload) {
 			return axios
-				.post(`${REACT_APP_API_BASE_URL}/glasses`, payload)
+				.post(`${REACT_APP_API_BASE_URL}/accessories`, payload)
 				.then(res => {
 					return res;
 				})
@@ -37,7 +37,7 @@ const userRepo = axios => {
 		},
 		update(payload, id) {
 			return axios
-				.post(`${REACT_APP_API_BASE_URL}/glasses/${id}`, payload)
+				.post(`${REACT_APP_API_BASE_URL}/accessories/${id}`, payload)
 				.then(res => {
 					return res;
 				})

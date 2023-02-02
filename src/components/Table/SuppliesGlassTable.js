@@ -14,7 +14,7 @@ const columns = [
 	{ id: 'name', label: 'Tên', minWidth: 170 },
 	{ id: 'code', label: 'Độ dày', minWidth: 100 },
 	{
-		id: 'population',
+		id: 'price',
 		label: 'Giá nhập',
 		minWidth: 170,
 		align: 'right',
@@ -61,7 +61,7 @@ export default function StickyHeadTable(props) {
 								<>
 									{rows.map(row => {
 										return (
-											<TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
+											<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
 												{columns.map(column => {
 													const value = row[column.id];
 													return (

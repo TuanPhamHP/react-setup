@@ -1,42 +1,49 @@
 import SuppliesGlassTable from '../../components/Table/SuppliesGlassTable';
 import { useState, useEffect } from 'react';
+import api from '../../services/index';
 
 import Pagination from '../../components/Shared/Pagination';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 import CreateNewSuppliesGlass from '../../components/Dialog/CreateNewSuppliesGlass';
 export default function ConstructionsList() {
-	function createData(name, code, population, size) {
-		const density = population / size;
-		return { name, code, population, size, density };
-	}
-	const rows = [createData('Kính 01', '18', 1324171354, 3287263), createData('Kính 02', '14', 1403500365, 9596961)];
-
 	const [firstDataLoading, setFirstDataLoading] = useState(true);
 	const [dataLoading, setDataLoading] = useState(true);
+	const [listData, setListData] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPage, setTotalPage] = useState(1);
 	const [openDialogCreate, setOpenDialogCreate] = useState(false);
-	const [rowsData, setRowsData] = useState(rows);
+	const { enqueueSnackbar } = useSnackbar();
 
-	const handleCreateNewData = ({ name, code, population, size }) => {
-		setRowsData([...rowsData, createData(name, code, population, size)]);
-	};
-
-	const getListData = () => {
+	const getListData = async () => {
 		setDataLoading(true);
-		setTimeout(() => {
-			setFirstDataLoading(false);
-			setDataLoading(false);
-		}, 700);
+		const res = await api.glass.getListData({ page: 1, per_page: 15 });
+
+		setFirstDataLoading(false);
+		setDataLoading(false);
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi lấy danh sách dữ liệu', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				setListData(res.data.data);
+				setTotalPage(1);
+			}
+		} catch (error) {}
+		// console.log(res);
 	};
 	useEffect(() => {
 		getListData();
 	}, []);
 	useEffect(() => {
-		getListData();
+		if (!firstDataLoading) {
+			getListData();
+		}
 	}, [currentPage]);
 	return (
 		<div className='page-container'>
@@ -46,7 +53,7 @@ export default function ConstructionsList() {
 			<CreateNewSuppliesGlass
 				openDialogCreate={openDialogCreate}
 				setOpenDialogCreate={setOpenDialogCreate}
-				handleCreateNewData={handleCreateNewData}
+				getListData={getListData}
 			/>
 			<div className='page-filter'>
 				<Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 12, md: 12 }}>
@@ -102,7 +109,7 @@ export default function ConstructionsList() {
 				</Grid>
 			</div>
 
-			<SuppliesGlassTable rows={rowsData} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
+			<SuppliesGlassTable rows={listData} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
 			<div className='' style={{ display: 'flex', justifyContent: 'flex-end' }}>
 				<Pagination page={currentPage} setCurrentPage={setCurrentPage} total={totalPage} setTotalPage={setTotalPage} />
 			</div>

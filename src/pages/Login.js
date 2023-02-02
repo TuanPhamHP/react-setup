@@ -197,40 +197,17 @@ export default function FullWidthTabs() {
 			const msg = 'Đăng nhập thất bại: ' + String(error) + ' Code 03';
 			console.log(msg);
 		}
-		// setTimeout(() => {
-		// 	if (formLogin.username === 'admin@gmail.com' && formLogin.password === '123456') {
-		// 		const fakeResult = {
-		// 			name: 'Admin',
-		// 			phone: '0989898989',
-		// 			email: 'admin@gmail.com',
-		// 			avatar: null,
-		// 			token: 'randomedToken',
-		// 		};
-		// 		if (rememberMe) {
-		// 			setCookie('email', String(formLogin.username).trim(), 30, true);
-		// 			setCookie('password', String(formLogin.password).trim(), 30, true);
-		// 			setCookie('token', String(fakeResult.token).trim(), 30, true);
-		// 		} else {
-		// 			deleteCookie('email');
-		// 			deleteCookie('password');
-		// 			deleteCookie('token');
-		// 		}
-
-		// 		setSession('token', String(fakeResult.token).trim(), true);
-		// 		dispatch(setUser(fakeResult));
-		// 		dispatch(setToken(fakeResult.token));
-		// 		setLoadingLogin(false);
-		// 		navigate('/');
-		// 		return;
-		// 	}
-		// 	enqueueSnackbar('Thông tin đăng nhập không chính xác. Vui lòng thử lại', { variant: 'error' });
-		// 	setLoadingLogin(false);
-		// }, 2000);
 	};
 	const handleLoginKeyup = event => {
 		event.preventDefault();
 		if (event.keyCode === 13) {
 			handleLogin();
+		}
+	};
+	const handleUsernameEnter = event => {
+		event.preventDefault();
+		if (event.keyCode === 13) {
+			document.querySelector('#loginPassword').focus();
 		}
 	};
 	useEffect(() => {
@@ -283,6 +260,7 @@ export default function FullWidthTabs() {
 										placeholder='Tài khoản'
 										label='Tài khoản'
 										value={formLogin.username}
+										onKeyUp={handleUsernameEnter}
 										onChange={e => {
 											handlerFormLoginInput(e, 'username');
 										}}
@@ -293,6 +271,7 @@ export default function FullWidthTabs() {
 								<FormControl fullWidth={true} sx={{ m: '12px 0', p: 0 }} variant='outlined'>
 									<TextField
 										error={!!formError.password}
+										id='loginPassword'
 										helperText={getErrorMessage(formError.password)}
 										type={showPassword ? 'text' : 'password'}
 										value={formLogin.password}
