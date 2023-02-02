@@ -67,9 +67,6 @@ export default function FormDialog(props) {
 	const handleFormDataInput = (e, field, type = 'string') => {
 		setFormData({ ...formData, [field]: e.target.value });
 	};
-	const handleClickOpen = () => {
-		props.setOpenDialogCreate(true);
-	};
 	const clearData = () => {
 		setFormError({});
 		setFormData({ ...defaultFormData });
@@ -120,7 +117,7 @@ export default function FormDialog(props) {
 				props.setOpenDialogCreate(false);
 			}
 		} catch (error) {
-			enqueueSnackbar(`Có lỗi khi lấy danh sách kiểu nhôm: ${error}`, { variant: 'error' });
+			enqueueSnackbar(`Có lỗi khi tạo vật liệu: ${error}`, { variant: 'error' });
 		}
 
 		// navigate('/cong-trinh/them-moi');
