@@ -1,5 +1,6 @@
 import SuppliesAlTable from '../../components/Table/SuppliesAlTable';
 import { useState, useEffect } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import api from '../../services/index';
 
 import Pagination from '../../components/Shared/Pagination';
@@ -9,19 +10,44 @@ import Button from '@mui/material/Button';
 import { useSnackbar } from 'notistack';
 import CreateNewSuppliesAl from '../../components/Dialog/CreateNewSuppliesAl';
 export default function ConstructionsList() {
+	let [searchParams, setSearchParams] = useSearchParams();
+	const [search, setSearch] = useState('');
 	const [firstDataLoading, setFirstDataLoading] = useState(true);
 	const [dataLoading, setDataLoading] = useState(true);
 	const [listData, setListData] = useState([]);
-	const [currentPage, setCurrentPage] = useState(1);
+	const [currentPage, setCurrentPage] = useState(0);
 	const [totalPage, setTotalPage] = useState(1);
 	const [openDialogCreate, setOpenDialogCreate] = useState(false);
 	const { enqueueSnackbar } = useSnackbar();
+	const location = useLocation();
 
-	const getListData = async () => {
-		setDataLoading(true);
-		const res = await api.aluminum.getListData({ page: 1, per_page: 15 });
+	const syncUrl = () => {
+		const currentPage = +searchParams.get('page') || 1;
+		const search = searchParams.get('search') || '';
+		setCurrentPage(currentPage);
+		setSearch(search);
 
 		setFirstDataLoading(false);
+	};
+	const handleSearch = () => {
+		setCurrentPage(1);
+	};
+	const bindUrl = () => {
+		const localCurrentPage = currentPage || 1;
+		const localSearch = search || '';
+		setSearchParams({
+			page: localCurrentPage,
+			search: localSearch,
+		});
+	};
+	const handleChangeSearch = e => {
+		const val = e.target.value;
+		setSearch(val);
+	};
+	const getListData = async () => {
+		setDataLoading(true);
+		const res = await api.aluminum.getListData({ search: search, page: currentPage, per_page: 3 });
+
 		setDataLoading(false);
 		if (!res) {
 			enqueueSnackbar('Có lỗi khi lấy danh sách dữ liệu', { variant: 'error' });
@@ -32,19 +58,30 @@ export default function ConstructionsList() {
 				enqueueSnackbar(res.statusText, { variant: 'error' });
 			} else {
 				setListData(res.data.data);
-				setTotalPage(1);
+				setTotalPage(3);
 			}
 		} catch (error) {}
-		// console.log(res);
 	};
+
 	useEffect(() => {
-		getListData();
+		if (!firstDataLoading) {
+			bindUrl();
+		}
+	}, [currentPage]);
+
+	useEffect(() => {
+		syncUrl();
 	}, []);
+
 	useEffect(() => {
 		if (!firstDataLoading) {
 			getListData();
 		}
-	}, [currentPage]);
+	}, [firstDataLoading, location.search]);
+
+	// useEffect(() => {
+	// 	getListData();
+	// }, [refQuery]);
 	return (
 		<div className='page-container'>
 			<div className='page-header'>
@@ -63,7 +100,9 @@ export default function ConstructionsList() {
 								placeholder='Tìm kiếm'
 								label=''
 								size='small'
+								value={search}
 								fullWidth={true}
+								onChange={e => handleChangeSearch(e)}
 								InputProps={{
 									classes: {
 										input: 'font-size-14',
@@ -82,6 +121,7 @@ export default function ConstructionsList() {
 								}}
 								size='medium'
 								elevation={0}
+								onClick={handleSearch}
 							>
 								Tìm kiếm
 							</Button>

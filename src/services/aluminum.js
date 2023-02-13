@@ -13,9 +13,9 @@ const userRepo = axios => {
 					return err.response;
 				});
 		},
-		getListAlStyles(payload = {}) {
+		getListAlTypes(payload = {}) {
 			return axios
-				.get(`${REACT_APP_API_BASE_URL}/aluminum-styles`, {
+				.get(`${REACT_APP_API_BASE_URL}/aluminum-types`, {
 					params: payload,
 				})
 				.then(res => {
@@ -25,9 +25,9 @@ const userRepo = axios => {
 					return err.response;
 				});
 		},
-		getListAlSystems(payload = {}) {
+		getListAlProfiles(payload = {}) {
 			return axios
-				.get(`${REACT_APP_API_BASE_URL}/aluminum-systems`, {
+				.get(`${REACT_APP_API_BASE_URL}/aluminum-profiles`, {
 					params: payload,
 				})
 				.then(res => {

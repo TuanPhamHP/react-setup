@@ -5,19 +5,15 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
-import Slide from '@mui/material/Slide';
+import NumberInputFormat from './NumberInputFormat';
+
 import styles from '../../assets/styles/DoorSet.module.scss';
 import { getErrorMessage } from '../../helpers/FormatnParse';
 import api from '../../services/index';
 import { useSnackbar } from 'notistack';
 import { useSelector } from 'react-redux';
 import { selectInternal } from '../../store/internal';
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-	return <Slide direction='up' ref={ref} {...props} />;
-});
 
 const defaultFormData = {
 	name: '',
@@ -57,9 +53,9 @@ export default function FormDialog(props) {
 		if (!formData.name || !String(formData.name).trim()) {
 			objError = { ...objError, name: 'required' };
 		}
-		if (!formData.unit) {
-			objError = { ...objError, unit: 'required' };
-		}
+		// if (!formData.unit) {
+		// 	objError = { ...objError, unit: 'required' };
+		// }
 
 		if (!formData.entry_price || !String(formData.entry_price).trim()) {
 			objError = { ...objError, entry_price: 'required' };
@@ -71,8 +67,9 @@ export default function FormDialog(props) {
 		// 	objError = { ...objError, discount: 'required' };
 		// }
 		if (Object.keys(objError).length) {
+			console.log(objError);
 			setFormError(objError);
-
+			enqueueSnackbar('Có lỗi khi tạo vật tư ' + `${objError}`, { variant: 'error' });
 			setLoadingCreate(false);
 			return;
 		}
@@ -183,18 +180,41 @@ export default function FormDialog(props) {
 							}}
 						/>
 					</div>
-					<div className='d-flex flex-column' style={{ marginBottom: '12px' }}>
+					{/* <div className='d-flex flex-column' style={{ marginBottom: '12px' }}>
 						<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Tỉ lệ lợi nhuận:</p>
 						<TextField
 							error={!!formError.profit_coefficient}
 							helperText={getErrorMessage(formError.profit_coefficient)}
 							margin='dense'
-							placeholder='Giá'
+							placeholder='Tỉ lệ lợi nhận'
 							value={formData.profit_coefficient}
 							onChange={e => {
 								handleFormDataInput(e, 'profit_coefficient');
 							}}
+							InputProps={{
+								startAdornment: <InputAdornment position='start'>%</InputAdornment>,
+							}}
 							type='number'
+							fullWidth
+							variant='outlined'
+							size='small'
+							sx={{
+								margin: 0,
+							}}
+						/>
+					</div> */}
+
+					<div className='d-flex flex-column' style={{ marginBottom: '12px' }}>
+						<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Tỉ lệ lợi nhuận:</p>
+						<TextField
+							value={formData.profit_coefficient}
+							onChange={e => handleFormDataInput(e, 'profit_coefficient')}
+							name='numberformat'
+							placeholder='Tỉ lệ lợi nhận'
+							id='formatted-numberformat-input'
+							InputProps={{
+								inputComponent: NumberInputFormat,
+							}}
 							fullWidth
 							variant='outlined'
 							size='small'

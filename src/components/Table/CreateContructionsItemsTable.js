@@ -66,7 +66,6 @@ export default function StickyHeadTable(props) {
 								<TBodyLoader key='1' count={columns.length || 3} />
 							) : (
 								<>
-									{' '}
 									{rows.map(row => {
 										return (
 											<TableRow hover role='checkbox' tabIndex={-1} key={row.code}>

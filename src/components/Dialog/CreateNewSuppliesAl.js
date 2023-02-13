@@ -56,7 +56,6 @@ export default function FormDialog(props) {
 		getOptionLabel: option => option.name,
 	};
 	const changeSystem = (e, data) => {
-		console.log(data);
 		setFormData({ ...formData, system: data });
 	};
 	const changeStyle = (e, data) => {

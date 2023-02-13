@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import TBodyLoader from './TBodyLoader';
+import TableEmptyRow from './TEmptyRow';
 import LinearProgress from '@mui/material/LinearProgress';
 
 import styles from '../../assets/styles/Table.module.scss';
@@ -118,24 +119,28 @@ export default function StickyHeadTable(props) {
 								<TBodyLoader key='1' count={columns.length || 3} />
 							) : (
 								<>
-									{rows.map(row => {
-										return (
-											<TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
-												{columns.map(column => {
-													const value = row[column.id];
-													return (
-														<TableCell key={column.id} align={column.align} sx={{ color: 'text.black', p: 1 }}>
-															{column.id === 'action'
-																? TableAction(row)
-																: column.format && typeof value === 'number'
-																? column.format(value)
-																: value}
-														</TableCell>
-													);
-												})}
-											</TableRow>
-										);
-									})}
+									{Array.isArray(rows) && rows.length ? (
+										rows.map(row => {
+											return (
+												<TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
+													{columns.map(column => {
+														const value = row[column.id];
+														return (
+															<TableCell key={column.id} align={column.align} sx={{ color: 'text.black', p: 1 }}>
+																{column.id === 'action'
+																	? TableAction(row)
+																	: column.format && typeof value === 'number'
+																	? column.format(value)
+																	: value}
+															</TableCell>
+														);
+													})}
+												</TableRow>
+											);
+										})
+									) : (
+										<TableEmptyRow />
+									)}
 								</>
 							)}
 						</TableBody>

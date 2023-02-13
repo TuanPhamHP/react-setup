@@ -1,44 +1,50 @@
 import EmployeesTable from '../../components/Table/EmployeesTable';
 import { useState, useEffect } from 'react';
+import api from '../../services/index';
 
 import Pagination from '../../components/Shared/Pagination';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 import CreateNewEmployee from '../../components/Dialog/CreateNewEmployee';
 export default function ConstructionsList() {
-	function createData(name, code, population, size) {
-		const density = population / size;
-		return { name, code, population, size, density };
-	}
 	const [firstDataLoading, setFirstDataLoading] = useState(true);
 	const [dataLoading, setDataLoading] = useState(true);
+	const [listData, setListData] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [totalPage, setTotalPage] = useState(2);
+	const [totalPage, setTotalPage] = useState(1);
 	const [openDialogCreate, setOpenDialogCreate] = useState(false);
+	const { enqueueSnackbar } = useSnackbar();
 
-	const rows = [
-		createData('Admin', 'admin@gmail.com', 'Active', 'Admin', 3287263),
-		createData('N.V.A', 'example1@gmail.com', 'Active', 'Nhân viên', 3287263),
-		createData('N.V.B', 'example2@gmail.com', 'Active', 'Nhân viên', 9596961),
-		createData('N.V.C', 'example3@gmail.com', 'Active', 'Nhân viên', 301340),
-	];
-
-	const getListData = () => {
+	const getListData = async () => {
 		setDataLoading(true);
-		setTimeout(() => {
-			setFirstDataLoading(false);
-			setDataLoading(false);
-		}, 700);
+		const res = await api.admins.getListData({ page: 1, per_page: 15 });
+
+		setFirstDataLoading(false);
+		setDataLoading(false);
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi lấy danh sách dữ liệu', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				setListData(res.data.data);
+				setTotalPage(1);
+			}
+		} catch (error) {}
+		// console.log(res);
 	};
 	useEffect(() => {
 		getListData();
 	}, []);
 	useEffect(() => {
-		getListData();
+		if (!firstDataLoading) {
+			getListData();
+		}
 	}, [currentPage]);
-
 	return (
 		<div className='page-container'>
 			<div className='page-header'>
@@ -99,7 +105,7 @@ export default function ConstructionsList() {
 				</Grid>
 			</div>
 
-			<EmployeesTable rows={rows} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
+			<EmployeesTable rows={listData} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
 			<div className='' style={{ display: 'flex', justifyContent: 'flex-end' }}>
 				<Pagination page={currentPage} setCurrentPage={setCurrentPage} total={totalPage} setTotalPage={setTotalPage} />
 			</div>

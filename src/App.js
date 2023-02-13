@@ -49,8 +49,8 @@ function App() {
 	const authUser = useSelector(selectUser);
 	const { enqueueSnackbar } = useSnackbar();
 	const dispatch = useDispatch();
-	const getListAlStyles = async () => {
-		const res = await api.aluminum.getListAlStyles({ pagination: false });
+	const getListAlTypes = async () => {
+		const res = await api.aluminum.getListAlTypes({ pagination: false });
 		if (!res) {
 			enqueueSnackbar('Có lỗi khi lấy danh sách kiểu nhôm', { variant: 'error' });
 			return;
@@ -65,8 +65,8 @@ function App() {
 			enqueueSnackbar(`Có lỗi khi lấy danh sách kiểu nhôm: ${error}`, { variant: 'error' });
 		}
 	};
-	const getListAlSystems = async () => {
-		const res = await api.aluminum.getListAlSystems({ pagination: false });
+	const getListAlProfiles = async () => {
+		const res = await api.aluminum.getListAlProfiles({ pagination: false });
 		if (!res) {
 			enqueueSnackbar('Có lỗi khi lấy danh sách kiểu nhôm', { variant: 'error' });
 			return;
@@ -83,8 +83,8 @@ function App() {
 	};
 	useEffect(() => {
 		if (authUser.user) {
-			getListAlStyles();
-			getListAlSystems();
+			getListAlTypes();
+			getListAlProfiles();
 		}
 	}, [authUser]);
 	const ProtectedRoute = ({ expectedPath, redirectPath = '/login', children }) => {

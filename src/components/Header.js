@@ -376,7 +376,7 @@ function ResponsiveAppBar() {
 					<Box sx={{ flexGrow: 0, marginLeft: '16px' }}>
 						<Tooltip title='Tùy chỉnh'>
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt={user.user?.name || 'U'} src={user.user?.avatar} />
+								<Avatar alt={user.user?.username || 'U'} src={user.user?.avatar} />
 							</IconButton>
 						</Tooltip>
 						<Menu
@@ -396,7 +396,7 @@ function ResponsiveAppBar() {
 							onClose={handleCloseUserMenu}
 						>
 							<MenuItem onClick={handleCloseUserMenu} sx={{ borderBottom: '1px solid #ebebeb' }}>
-								<Typography textAlign='center'>Xin chào, {user.user?.name} </Typography>
+								<Typography textAlign='center'>Xin chào, {user.user?.username} </Typography>
 							</MenuItem>
 							<MenuItem onClick={handleNavigateSub} sx={{ borderBottom: '1px solid #ebebeb' }}>
 								<Typography textAlign='center'>Nhân viên</Typography>

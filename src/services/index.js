@@ -5,6 +5,7 @@ import aluminum from './aluminum';
 import glass from './glass';
 import supply from './supply';
 import accessory from './accessory';
+import admins from './admins';
 
 import { deleteCookie } from '../helpers/customizeCookie';
 const onCatch = err => {
@@ -28,6 +29,7 @@ const services = (axios => {
 		glass: glass(axios),
 		supply: supply(axios),
 		accessory: accessory(axios),
+		admins: admins(axios),
 	};
 })(axios);
 export default services;
