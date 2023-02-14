@@ -11,7 +11,7 @@ import { useSnackbar } from 'notistack';
 import CreateNewSuppliesAl from '../../components/Dialog/CreateNewSuppliesAl';
 export default function ConstructionsList() {
 	let [searchParams, setSearchParams] = useSearchParams();
-	const [search, setSearch] = useState('');
+	const [name, setName] = useState('');
 	const [firstDataLoading, setFirstDataLoading] = useState(true);
 	const [dataLoading, setDataLoading] = useState(true);
 	const [listData, setListData] = useState([]);
@@ -23,30 +23,33 @@ export default function ConstructionsList() {
 
 	const syncUrl = () => {
 		const currentPage = +searchParams.get('page') || 1;
-		const search = searchParams.get('search') || '';
+		const name = searchParams.get('name') || '';
 		setCurrentPage(currentPage);
-		setSearch(search);
+		setName(name);
 
 		setFirstDataLoading(false);
 	};
 	const handleSearch = () => {
 		setCurrentPage(1);
+		if (currentPage === 1) {
+			bindUrl();
+		}
 	};
 	const bindUrl = () => {
 		const localCurrentPage = currentPage || 1;
-		const localSearch = search || '';
+		const localSearch = name || '';
 		setSearchParams({
 			page: localCurrentPage,
-			search: localSearch,
+			name: localSearch,
 		});
 	};
 	const handleChangeSearch = e => {
 		const val = e.target.value;
-		setSearch(val);
+		setName(val);
 	};
 	const getListData = async () => {
 		setDataLoading(true);
-		const res = await api.aluminum.getListData({ search: search, page: currentPage, per_page: 3 });
+		const res = await api.aluminum.getListData({ name: name, page: currentPage, per_page: 15 });
 
 		setDataLoading(false);
 		if (!res) {
@@ -57,8 +60,9 @@ export default function ConstructionsList() {
 			if (!res.status || res.status > 399) {
 				enqueueSnackbar(res.statusText, { variant: 'error' });
 			} else {
+				const pagination = res.data.pagination;
 				setListData(res.data.data);
-				setTotalPage(3);
+				setTotalPage(pagination.total_page);
 			}
 		} catch (error) {}
 	};
@@ -100,9 +104,14 @@ export default function ConstructionsList() {
 								placeholder='Tìm kiếm'
 								label=''
 								size='small'
-								value={search}
+								value={name}
 								fullWidth={true}
 								onChange={e => handleChangeSearch(e)}
+								onKeyUp={e => {
+									if (e.key === 'Enter') {
+										handleSearch();
+									}
+								}}
 								InputProps={{
 									classes: {
 										input: 'font-size-14',

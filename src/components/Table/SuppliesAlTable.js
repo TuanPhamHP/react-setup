@@ -13,14 +13,19 @@ import LinearProgress from '@mui/material/LinearProgress';
 import styles from '../../assets/styles/Table.module.scss';
 const columns = [
 	{ id: 'name', label: 'Tên', minWidth: 170 },
-	{ id: 'aluminum_style_id', label: 'Hệ', minWidth: 100 },
 	{
-		id: 'population',
-		label: 'Giá',
-		minWidth: 170,
-		align: 'right',
-		format: value => value.toLocaleString('en-US'),
+		id: 'aluminumProfile',
+		label: 'Hệ nhôm',
+		minWidth: 100,
+		format: value => value?.name || '---',
 	},
+	// {
+	// 	id: 'population',
+	// 	label: 'Giá',
+	// 	minWidth: 170,
+	// 	align: 'right',
+	// 	format: value => value.toLocaleString('en-US'),
+	// },
 	{
 		id: 'density',
 		label: 'Tỉ trọng',
@@ -28,19 +33,19 @@ const columns = [
 		align: 'right',
 		format: value => value.toLocaleString('en-US'),
 	},
+	// {
+	// 	id: 'price',
+	// 	label: 'Giá nhập',
+	// 	minWidth: 170,
+	// 	align: 'right',
+	// 	format: value => value.toFixed(2) || '---',
+	// },
 	{
-		id: 'price',
-		label: 'Giá nhập',
-		minWidth: 170,
-		align: 'right',
-		format: value => value.toFixed(2) || '---',
-	},
-	{
-		id: 'aluminum_system_id',
+		id: 'aluminumType',
 		label: 'Loại',
 		minWidth: 170,
 		align: 'right',
-		format: () => 'Nhôm',
+		format: value => value?.name || '---',
 	},
 ];
 
@@ -82,7 +87,7 @@ export default function StickyHeadTable(props) {
 														const value = row[column.id];
 														return (
 															<TableCell key={column.id} align={column.align} sx={{ color: 'text.black' }}>
-																{column.format && typeof value === 'number' ? column.format(value) : value}
+																{column.format && value ? column.format(value) : value || '---'}
 															</TableCell>
 														);
 													})}
