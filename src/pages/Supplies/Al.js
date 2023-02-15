@@ -4,6 +4,7 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import api from '../../services/index';
 
 import Pagination from '../../components/Shared/Pagination';
+import ConfirmDialog from '../../components/Dialog/ConfirmDialog';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -15,10 +16,14 @@ export default function ConstructionsList() {
 	const [firstDataLoading, setFirstDataLoading] = useState(true);
 	const [dataLoading, setDataLoading] = useState(true);
 	const [listData, setListData] = useState([]);
+	const [selectedData, setSelectedData] = useState(null);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [totalPage, setTotalPage] = useState(1);
 	const [openDialogCreate, setOpenDialogCreate] = useState(false);
 	const { enqueueSnackbar } = useSnackbar();
+
+	const [loadingDelete, setLoadingDelete] = useState(false);
+	const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 	const location = useLocation();
 
 	const syncUrl = () => {
@@ -60,13 +65,50 @@ export default function ConstructionsList() {
 			if (!res.status || res.status > 399) {
 				enqueueSnackbar(res.statusText, { variant: 'error' });
 			} else {
-				const pagination = res.data.pagination;
+				const pagination = res.data.pagination || {};
+				setTotalPage(pagination.total_page || 1);
 				setListData(res.data.data);
-				setTotalPage(pagination.total_page);
 			}
 		} catch (error) {}
 	};
+	const onEdit = _data => {
+		setSelectedData(_data);
+		setOpenDialogCreate(true);
+	};
+	const closeCU = _data => {
+		setSelectedData(null);
+		setOpenDialogCreate(false);
+	};
+	const onDelete = _data => {
+		setSelectedData(_data);
+		setOpenConfirmDialog(true);
+	};
+	const closeDelete = () => {
+		setSelectedData(null);
+		setOpenConfirmDialog(false);
+	};
+	const onSubmitDelete = async () => {
+		if (!selectedData) {
+			return;
+		}
+		setLoadingDelete(true);
+		const res = await api.aluminum.delete(selectedData.id);
 
+		setLoadingDelete(false);
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi xóa dữ liệu', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				enqueueSnackbar('Xóa thành công', { variant: 'success' });
+				getListData();
+				closeDelete();
+			}
+		} catch (error) {}
+	};
 	useEffect(() => {
 		if (!firstDataLoading) {
 			bindUrl();
@@ -82,10 +124,6 @@ export default function ConstructionsList() {
 			getListData();
 		}
 	}, [firstDataLoading, location.search]);
-
-	// useEffect(() => {
-	// 	getListData();
-	// }, [refQuery]);
 	return (
 		<div className='page-container'>
 			<div className='page-header'>
@@ -95,6 +133,8 @@ export default function ConstructionsList() {
 				openDialogCreate={openDialogCreate}
 				setOpenDialogCreate={setOpenDialogCreate}
 				getListData={getListData}
+				selectedData={selectedData}
+				closeDialog={closeCU}
 			/>
 			<div className='page-filter'>
 				<Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 12, md: 12 }}>
@@ -108,7 +148,7 @@ export default function ConstructionsList() {
 								fullWidth={true}
 								onChange={e => handleChangeSearch(e)}
 								onKeyUp={e => {
-									if (e.key === 'Enter') {
+									if (['Enter', 'NumpadEnter'].includes(e.key)) {
 										handleSearch();
 									}
 								}}
@@ -158,10 +198,24 @@ export default function ConstructionsList() {
 				</Grid>
 			</div>
 
-			<SuppliesAlTable rows={listData} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
+			<SuppliesAlTable
+				rows={listData}
+				onLoadData={dataLoading}
+				isFirstLoad={firstDataLoading}
+				onDelete={onDelete}
+				onEdit={onEdit}
+			/>
 			<div className='' style={{ display: 'flex', justifyContent: 'flex-end' }}>
 				<Pagination page={currentPage} setCurrentPage={setCurrentPage} total={totalPage} setTotalPage={setTotalPage} />
 			</div>
+			<ConfirmDialog
+				openDialog={openConfirmDialog}
+				setOpenDialog={setOpenConfirmDialog}
+				closeDialog={closeDelete}
+				onSubmit={onSubmitDelete}
+				message={`Bạn chắc chắn muốn xóa ${selectedData ? selectedData.name : ''} ?`}
+				loading={loadingDelete}
+			/>
 		</div>
 	);
 }

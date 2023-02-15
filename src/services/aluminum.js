@@ -50,7 +50,7 @@ const userRepo = axios => {
 		delete(_id) {
 			return axios({
 				method: 'DELETE',
-				url: `api/roles/${_id}`,
+				url: `${REACT_APP_API_BASE_URL}/aluminum/${_id}`,
 			})
 				.then(res => {
 					return res;
@@ -61,7 +61,7 @@ const userRepo = axios => {
 		},
 		update(payload, id) {
 			return axios
-				.post(`${REACT_APP_API_BASE_URL}/aluminum/${id}`, payload)
+				.put(`${REACT_APP_API_BASE_URL}/aluminum/${id}`, payload)
 				.then(res => {
 					return res;
 				})

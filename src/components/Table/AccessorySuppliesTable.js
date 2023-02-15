@@ -8,27 +8,83 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TBodyLoader from './TBodyLoader';
 import LinearProgress from '@mui/material/LinearProgress';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import Tooltip from '@mui/material/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import styles from '../../assets/styles/Table.module.scss';
 const columns = [
 	{ id: 'name', label: 'Tên', minWidth: 170 },
-	{ id: 'unit', label: 'Mẫu cửa', minWidth: 100 },
 	{
 		id: 'entry_price',
 		label: 'Giá nhập',
 		minWidth: 170,
-		align: 'right',
+		align: 'left',
 		format: value => value.toLocaleString('en-US'),
+	},
+	{
+		id: 'discount',
+		label: 'Giảm giá',
+		minWidth: 170,
+		align: 'left',
+		format: value => value + '%',
 	},
 	{
 		id: 'profit_coefficient',
 		label: 'Tỉ suất lợi nhuận',
 		minWidth: 170,
-		align: 'right',
+		align: 'left',
 		format: value => value + '%',
 	},
-];
 
+	{
+		id: 'action',
+		label: 'Tác vụ',
+		minWidth: 170,
+		align: 'right',
+	},
+];
+function TableAction(data, props) {
+	return (
+		<>
+			<Tooltip title='Sửa'>
+				<IconButton
+					aria-label='edit'
+					aria-expanded={undefined}
+					size='small'
+					color='primary'
+					sx={{
+						backgroundColor: '#fff',
+						backdropFilter: 'blur(4px)',
+					}}
+					onClick={() => {
+						props.onEdit(data);
+					}}
+				>
+					<EditIcon htmlColor='#1976D2' />
+				</IconButton>
+			</Tooltip>
+			<Tooltip title='Xóa'>
+				<IconButton
+					aria-label='edit'
+					aria-expanded={undefined}
+					size='small'
+					color='primary'
+					sx={{
+						backgroundColor: '#fff',
+						backdropFilter: 'blur(4px)',
+					}}
+					onClick={() => {
+						props.onDelete(data);
+					}}
+				>
+					<DeleteIcon htmlColor='#D11313' />
+				</IconButton>
+			</Tooltip>
+		</>
+	);
+}
 export default function StickyHeadTable(props) {
 	const rows = props.rows;
 	return (
@@ -39,7 +95,12 @@ export default function StickyHeadTable(props) {
 						<TableHead>
 							<TableRow>
 								{columns.map(column => (
-									<TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+									<TableCell
+										key={column.id}
+										align={column.align}
+										style={{ minWidth: column.minWidth }}
+										sx={{ padding: '8px!important' }}
+									>
 										{column.label}
 									</TableCell>
 								))}
@@ -67,8 +128,16 @@ export default function StickyHeadTable(props) {
 												{columns.map(column => {
 													const value = row[column.id];
 													return (
-														<TableCell key={column.id} align={column.align} sx={{ color: 'text.black' }}>
-															{column.format ? column.format(value) : value}
+														<TableCell
+															key={column.id}
+															align={column.align}
+															sx={{ color: 'text.black', padding: '8px!important' }}
+														>
+															{column.id === 'action'
+																? TableAction(row, props)
+																: column.format
+																? column.format(value)
+																: value}
 														</TableCell>
 													);
 												})}

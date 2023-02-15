@@ -9,6 +9,10 @@ import TableRow from '@mui/material/TableRow';
 import TBodyLoader from './TBodyLoader';
 import TableEmptyRow from './TEmptyRow';
 import LinearProgress from '@mui/material/LinearProgress';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import Tooltip from '@mui/material/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import styles from '../../assets/styles/Table.module.scss';
 const columns = [
@@ -47,8 +51,53 @@ const columns = [
 		align: 'right',
 		format: value => value?.name || '---',
 	},
+	{
+		id: 'action',
+		label: 'Tác vụ',
+		minWidth: 170,
+		align: 'right',
+	},
 ];
-
+function TableAction(data, props) {
+	return (
+		<>
+			<Tooltip title='Sửa'>
+				<IconButton
+					aria-label='edit'
+					aria-expanded={undefined}
+					size='small'
+					color='primary'
+					sx={{
+						backgroundColor: '#fff',
+						backdropFilter: 'blur(4px)',
+					}}
+					onClick={() => {
+						props.onEdit(data);
+					}}
+				>
+					<EditIcon htmlColor='#1976D2' />
+				</IconButton>
+			</Tooltip>
+			<Tooltip title='Xóa'>
+				<IconButton
+					aria-label='edit'
+					aria-expanded={undefined}
+					size='small'
+					color='primary'
+					sx={{
+						backgroundColor: '#fff',
+						backdropFilter: 'blur(4px)',
+					}}
+					onClick={() => {
+						props.onDelete(data);
+					}}
+				>
+					<DeleteIcon htmlColor='#D11313' />
+				</IconButton>
+			</Tooltip>
+		</>
+	);
+}
 export default function StickyHeadTable(props) {
 	const rows = props.rows;
 	return (
@@ -86,8 +135,16 @@ export default function StickyHeadTable(props) {
 													{columns.map(column => {
 														const value = row[column.id];
 														return (
-															<TableCell key={column.id} align={column.align} sx={{ color: 'text.black' }}>
-																{column.format && value ? column.format(value) : value || '---'}
+															<TableCell
+																key={column.id}
+																align={column.align}
+																sx={{ color: 'text.black', padding: '8px!important' }}
+															>
+																{column.id === 'action'
+																	? TableAction(row, props)
+																	: column.format && value
+																	? column.format(value)
+																	: value || '---'}
 															</TableCell>
 														);
 													})}

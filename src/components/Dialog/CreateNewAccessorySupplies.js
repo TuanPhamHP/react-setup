@@ -12,8 +12,6 @@ import styles from '../../assets/styles/DoorSet.module.scss';
 import { getErrorMessage } from '../../helpers/FormatnParse';
 import api from '../../services/index';
 import { useSnackbar } from 'notistack';
-import { useSelector } from 'react-redux';
-import { selectInternal } from '../../store/internal';
 
 const defaultFormData = {
 	name: '',
@@ -24,28 +22,23 @@ const defaultFormData = {
 };
 
 export default function FormDialog(props) {
-	const internal = useSelector(selectInternal);
 	const { enqueueSnackbar } = useSnackbar();
 	const [open, setOpen] = React.useState(props.openDialogCreate);
+	const [isEdit, setIsEdit] = React.useState(false);
 	const [formError, setFormError] = React.useState({});
 	const [loadingCreate, setLoadingCreate] = React.useState(false);
 	const [formData, setFormData] = React.useState({ ...defaultFormData });
-	const alSystemOption = internal.listAlSystems;
-
-	const defaultProps = {
-		getOptionLabel: option => option.name,
-	};
-	const changeUnit = (e, data) => {
-		console.log(data);
-		setFormData({ ...formData, unit: data });
-	};
 
 	const handleFormDataInput = (e, field) => {
 		setFormData({ ...formData, [field]: e.target.value });
 	};
 	const clearData = () => {
+		setIsEdit(false);
 		setFormError({});
 		setFormData({ ...defaultFormData });
+	};
+	const submit = () => {
+		isEdit ? handleUpdate() : handleCreate();
 	};
 	const handleCreate = async () => {
 		setLoadingCreate(true);
@@ -53,19 +46,11 @@ export default function FormDialog(props) {
 		if (!formData.name || !String(formData.name).trim()) {
 			objError = { ...objError, name: 'required' };
 		}
-		// if (!formData.unit) {
-		// 	objError = { ...objError, unit: 'required' };
-		// }
 
 		if (!formData.entry_price || !String(formData.entry_price).trim()) {
 			objError = { ...objError, entry_price: 'required' };
 		}
-		// if (!formData.profit || !String(formData.profit).trim()) {
-		// 	objError = { ...objError, profit: 'required' };
-		// }
-		// if (!formData.discount || !String(formData.discount).trim()) {
-		// 	objError = { ...objError, discount: 'required' };
-		// }
+
 		if (Object.keys(objError).length) {
 			console.log(objError);
 			setFormError(objError);
@@ -75,7 +60,6 @@ export default function FormDialog(props) {
 		}
 		const body = {
 			name: formData.name,
-			// unit: +formData.unit.id,
 			entry_price: +formData.entry_price,
 			profit_coefficient: +formData.profit_coefficient,
 			discount: +formData.discount,
@@ -99,17 +83,72 @@ export default function FormDialog(props) {
 		}
 		// navigate('/cong-trinh/them-moi');
 	};
+	const handleUpdate = async () => {
+		setLoadingCreate(true);
+		let objError = {};
+		if (!formData.name || !String(formData.name).trim()) {
+			objError = { ...objError, name: 'required' };
+		}
 
+		if (!formData.entry_price || !String(formData.entry_price).trim()) {
+			objError = { ...objError, entry_price: 'required' };
+		}
+
+		if (Object.keys(objError).length) {
+			console.log(objError);
+			setFormError(objError);
+			enqueueSnackbar('Có lỗi khi tạo vật tư ' + `${objError}`, { variant: 'error' });
+			setLoadingCreate(false);
+			return;
+		}
+		const body = {
+			name: formData.name,
+			entry_price: +formData.entry_price,
+			profit_coefficient: +formData.profit_coefficient,
+			discount: +formData.discount,
+		};
+		const res = await api.accessory.update(body, props.selectedData.id);
+		setLoadingCreate(false);
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi cập nhật vật liệu', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399 || res.status < 200) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				enqueueSnackbar('Cập nhật thành công', { variant: 'success' });
+				props.getListData();
+
+				props.closeDialog();
+			}
+		} catch (error) {
+			enqueueSnackbar(`Có lỗi khi cập nhật vật liệu: ${error}`, { variant: 'error' });
+		}
+	};
 	const handleClose = () => {
 		if (loadingCreate) {
 			return;
 		}
-		props.setOpenDialogCreate(false);
+		props.closeDialog(false);
 	};
 	React.useEffect(() => {
 		setOpen(props.openDialogCreate);
+		if (props.selectedData && props.selectedData.id) {
+			const selectedData = { ...props.selectedData };
+			const f = {
+				name: selectedData.name,
+				entry_price: selectedData.entry_price,
+				profit_coefficient: selectedData.profit_coefficient,
+				discount: selectedData.discount,
+			};
+			setIsEdit(true);
+			setFormError({});
+			setFormData(f);
+			return;
+		}
 		clearData();
-	}, [props.openDialogCreate]);
+	}, [props.openDialogCreate, props.selectedData]);
 
 	return (
 		<div>
@@ -261,7 +300,7 @@ export default function FormDialog(props) {
 						Đóng
 					</Button>
 					<Button
-						onClick={handleCreate}
+						onClick={submit}
 						sx={{
 							display: 'flex',
 							alignItems: 'center',
