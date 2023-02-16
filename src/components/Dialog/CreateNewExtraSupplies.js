@@ -11,6 +11,8 @@ import styles from '../../assets/styles/DoorSet.module.scss';
 import { getErrorMessage } from '../../helpers/FormatnParse';
 import { useSnackbar } from 'notistack';
 import api from '../../services/index';
+import NumberInputFormat from './NumberInputFormat';
+
 import { useSelector } from 'react-redux';
 import { selectInternal } from '../../store/internal';
 const defaultFormData = {
@@ -25,6 +27,7 @@ export default function FormDialog(props) {
 	const [open, setOpen] = React.useState(props.openDialogCreate);
 	const [formError, setFormError] = React.useState({});
 	const [loadingCreate, setLoadingCreate] = React.useState(false);
+	const [isEdit, setIsEdit] = React.useState(false);
 	const [formData, setFormData] = React.useState({ ...defaultFormData });
 	const alStylesOption = internal.listAlStyles;
 
@@ -40,8 +43,12 @@ export default function FormDialog(props) {
 		setFormData({ ...formData, [field]: e.target.value });
 	};
 	const clearData = () => {
+		setIsEdit(false);
 		setFormError({});
 		setFormData({ ...defaultFormData });
+	};
+	const submit = () => {
+		isEdit ? handleUpdate() : handleCreate();
 	};
 	const handleCreate = async () => {
 		setLoadingCreate(true);
@@ -78,13 +85,55 @@ export default function FormDialog(props) {
 			} else {
 				enqueueSnackbar('Tạo mới thành công', { variant: 'success' });
 				props.getListData();
-				props.setOpenDialogCreate(false);
+
+				props.closeDialog();
 			}
 		} catch (error) {
 			enqueueSnackbar(`Có lỗi khi tạo vật liệu: ${error}`, { variant: 'error' });
 		}
 	};
+	const handleUpdate = async () => {
+		setLoadingCreate(true);
+		let objError = {};
+		if (!String(formData.name).trim()) {
+			objError = { ...objError, name: 'required' };
+		}
+		if (!formData.unit) {
+			objError = { ...objError, unit: 'required' };
+		}
+		if (!String(formData.price).trim()) {
+			objError = { ...objError, price: 'required' };
+		}
+		if (Object.keys(objError).length) {
+			setFormError(objError);
 
+			setLoadingCreate(false);
+			return;
+		}
+		const body = {
+			name: formData.name,
+			unit: +formData.unit.id,
+			price: +formData.price,
+		};
+		const res = await api.supply.update(body, props.selectedData.id);
+		setLoadingCreate(false);
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi cập nhật vật liệu nhôm', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399 || res.status < 200) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				enqueueSnackbar('Cập nhật thành công', { variant: 'success' });
+				props.getListData();
+
+				props.closeDialog();
+			}
+		} catch (error) {
+			enqueueSnackbar(`Có lỗi khi cập nhật vật liệu: ${error}`, { variant: 'error' });
+		}
+	};
 	const handleClose = () => {
 		if (loadingCreate) {
 			return;
@@ -93,13 +142,24 @@ export default function FormDialog(props) {
 	};
 	React.useEffect(() => {
 		setOpen(props.openDialogCreate);
+		if (props.selectedData && props.selectedData.id) {
+			const selectedData = { ...props.selectedData };
+			const f = {
+				name: selectedData.name,
+				price: selectedData.price,
+			};
+			setIsEdit(true);
+			setFormError({});
+			setFormData(f);
+			return;
+		}
 		clearData();
-	}, [props.openDialogCreate]);
+	}, [props.openDialogCreate, props.selectedData]);
 
 	return (
 		<div>
 			<Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
-				<DialogTitle>Thêm vật tư phụ</DialogTitle>
+				<DialogTitle>{isEdit ? 'Chỉnh sửa vật tư' : 'Thêm vật tư phụ'}</DialogTitle>
 				<DialogContent>
 					<div className='d-flex flex-column' style={{ marginBottom: '12px' }}>
 						<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Tên:</p>
@@ -148,6 +208,7 @@ export default function FormDialog(props) {
 					<div className='d-flex flex-column' style={{ marginBottom: '12px' }}>
 						<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Giá:</p>
 						<TextField
+							name='Pricing'
 							error={!!formError.price}
 							helperText={getErrorMessage(formError.price)}
 							margin='dense'
@@ -156,7 +217,9 @@ export default function FormDialog(props) {
 							onChange={e => {
 								handleFormDataInput(e, 'price');
 							}}
-							type='number'
+							InputProps={{
+								inputComponent: NumberInputFormat,
+							}}
 							fullWidth
 							variant='outlined'
 							size='small'
@@ -183,7 +246,7 @@ export default function FormDialog(props) {
 						Đóng
 					</Button>
 					<Button
-						onClick={handleCreate}
+						onClick={submit}
 						sx={{
 							display: 'flex',
 							alignItems: 'center',

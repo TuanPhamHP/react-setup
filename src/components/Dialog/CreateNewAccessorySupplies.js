@@ -153,7 +153,7 @@ export default function FormDialog(props) {
 	return (
 		<div>
 			<Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
-				<DialogTitle>Thêm vật tư - Phụ kiện</DialogTitle>
+				<DialogTitle>{isEdit ? 'Chỉnh sửa vật tư' : 'Thêm vật tư - Phụ kiện'}</DialogTitle>
 				<DialogContent>
 					<div className='d-flex flex-column' style={{ marginBottom: '12px' }}>
 						<p className={`m-0 text-nowrap ${styles.fieldTitle}`}>Tên:</p>
@@ -206,11 +206,14 @@ export default function FormDialog(props) {
 							helperText={getErrorMessage(formError.entry_price)}
 							margin='dense'
 							placeholder='Giá'
+							name='EntryPrice'
 							value={formData.entry_price}
 							onChange={e => {
 								handleFormDataInput(e, 'entry_price');
 							}}
-							type='number'
+							InputProps={{
+								inputComponent: NumberInputFormat,
+							}}
 							fullWidth
 							variant='outlined'
 							size='small'
@@ -248,7 +251,7 @@ export default function FormDialog(props) {
 						<TextField
 							value={formData.profit_coefficient}
 							onChange={e => handleFormDataInput(e, 'profit_coefficient')}
-							name='numberformat'
+							name='ProfitC'
 							placeholder='Tỉ lệ lợi nhận'
 							id='formatted-numberformat-input'
 							InputProps={{
@@ -269,11 +272,14 @@ export default function FormDialog(props) {
 							helperText={getErrorMessage(formError.discount)}
 							margin='dense'
 							placeholder='Giá'
+							name='discountC'
 							value={formData.discount}
+							InputProps={{
+								inputComponent: NumberInputFormat,
+							}}
 							onChange={e => {
 								handleFormDataInput(e, 'discount');
 							}}
-							type='number'
 							fullWidth
 							variant='outlined'
 							size='small'
