@@ -6,12 +6,13 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import TBodyLoader from './TBodyLoader';
+import TableEmptyRow from './TEmptyRow';
 import LinearProgress from '@mui/material/LinearProgress';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import Tooltip from '@mui/material/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import styles from '../../assets/styles/Table.module.scss';
 const columns = [
@@ -33,50 +34,44 @@ const columns = [
 ];
 
 export default function StickyHeadTable(props) {
-	const [elMenu, setElMenu] = useState(null);
-	const [selectedData, setSelectedData] = useState(null);
-	const handleClick = (e, employee) => {
-		setSelectedData(employee);
-		setElMenu(e.target);
-	};
-	const handleClose = () => {
-		setSelectedData(null);
-		setElMenu(null);
-	};
 	const rows = props.rows;
-	function TableAction(data) {
+	function TableAction(data, props) {
 		return (
 			<>
-				<IconButton
-					aria-label='more'
-					aria-expanded={selectedData && data.name === selectedData.name ? 'true' : undefined}
-					aria-haspopup='true'
-					onClick={e => {
-						handleClick(e, data);
-					}}
-					size='small'
-					sx={{
-						backgroundColor: '#cec5c5a3',
-						backdropFilter: 'blur(4px)',
-					}}
-				>
-					<MoreHorizIcon htmlColor='#000' />
-				</IconButton>
-				<Menu
-					anchorEl={elMenu}
-					MenuListProps={{
-						'aria-labelledby': 'long-button',
-					}}
-					open={!!(selectedData && data.name === selectedData.name)}
-					onClose={handleClose}
-				>
-					<MenuItem onClick={handleClose} sx={{ fontSize: '14px' }}>
-						Sửa
-					</MenuItem>
-					<MenuItem onClick={handleClose} sx={{ fontSize: '14px' }}>
-						Tải báo giá
-					</MenuItem>
-				</Menu>
+				<Tooltip title='Sửa'>
+					<IconButton
+						aria-label='edit'
+						aria-expanded={undefined}
+						size='small'
+						color='primary'
+						sx={{
+							backgroundColor: '#fff',
+							backdropFilter: 'blur(4px)',
+						}}
+						onClick={() => {
+							props.onEdit(data);
+						}}
+					>
+						<EditIcon htmlColor='#1976D2' />
+					</IconButton>
+				</Tooltip>
+				<Tooltip title='Xóa'>
+					<IconButton
+						aria-label='edit'
+						aria-expanded={undefined}
+						size='small'
+						color='primary'
+						sx={{
+							backgroundColor: '#fff',
+							backdropFilter: 'blur(4px)',
+						}}
+						onClick={() => {
+							props.onDelete(data);
+						}}
+					>
+						<DeleteIcon htmlColor='#D11313' />
+					</IconButton>
+				</Tooltip>
 			</>
 		);
 	}
@@ -108,31 +103,32 @@ export default function StickyHeadTable(props) {
 								<TBodyLoader key='1' count={columns.length || 3} />
 							) : (
 								<>
-									{rows.map(row => {
-										return (
-											<TableRow
-												hover
-												role='checkbox'
-												tabIndex={-1}
-												key={row.code}
-												sx={{ p: 1 }}
-												className={props.onLoadData ? 'table-body-loading' : ''}
-											>
-												{columns.map(column => {
-													const value = row[column.id];
-													return (
-														<TableCell key={column.id} align={column.align} sx={{ color: 'text.black', p: 1 }}>
-															{column.id === 'action'
-																? TableAction(row)
-																: column.format && typeof value === 'number'
-																? column.format(value)
-																: value}
-														</TableCell>
-													);
-												})}
-											</TableRow>
-										);
-									})}
+									{Array.isArray(rows) && rows.length ? (
+										rows.map(row => {
+											return (
+												<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
+													{columns.map(column => {
+														const value = row[column.id];
+														return (
+															<TableCell
+																key={column.id}
+																align={column.align}
+																sx={{ color: 'text.black', padding: '8px!important' }}
+															>
+																{column.id === 'action'
+																	? TableAction(row, props)
+																	: column.format && value
+																	? column.format(value)
+																	: value || '---'}
+															</TableCell>
+														);
+													})}
+												</TableRow>
+											);
+										})
+									) : (
+										<TableEmptyRow isLoading={props.onLoadData} />
+									)}
 								</>
 							)}
 						</TableBody>

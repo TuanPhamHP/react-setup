@@ -1,48 +1,61 @@
 import ContructionsTable from '../../components/Table/ContructionsTable';
 import { useState, useEffect } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import api from '../../services/index';
 
 import Pagination from '../../components/Shared/Pagination';
+import ConfirmDialog from '../../components/Dialog/ConfirmDialog';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { useSnackbar } from 'notistack';
 import CreateNewConstruction from '../../components/Dialog/CreateNewConstruction';
-const defaultFilter = {
-	search: '',
-};
-export default function ConstructionsList() {
-	function createData(name, code, population, size) {
-		const density = population / size;
-		return { name, code, population, size, density };
-	}
 
+export default function ConstructionsList() {
+	let [searchParams, setSearchParams] = useSearchParams();
+	const [name, setName] = useState('');
 	const [firstDataLoading, setFirstDataLoading] = useState(true);
 	const [dataLoading, setDataLoading] = useState(true);
-	const [formFilter, setFormFilter] = useState({ ...defaultFilter });
+	const [listData, setListData] = useState([]);
+	const [selectedData, setSelectedData] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPage, setTotalPage] = useState(2);
 	const [openDialogCreate, setOpenDialogCreate] = useState(false);
 	const { enqueueSnackbar } = useSnackbar();
+	const [loadingDelete, setLoadingDelete] = useState(false);
+	const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+	const location = useLocation();
 
-	const rows = [
-		createData('India', '0987789981', 'Đã hoàn thành', 3287263),
-		createData('China', '0987789982', 'Đã hoàn thành', 9596961),
-		createData('Italy', '0987789983', 'Đã hoàn thành', 301340),
-		createData('United States', '0987789984', 'Đã hoàn thành', 9833520),
-		createData('Canada', '0987789985', 'Đã hoàn thành', 9984670),
-		createData('Australia', '0987789986', 'Đã hoàn thành', 7692024),
-		createData('Germany', '0987789987', 'Đã hoàn thành', 357578),
-		createData('Ireland', '0987789988', 'Đã hoàn thành', 70273),
-		createData('Mexico', '0987789989', 'Đã hoàn thành', 1972550),
-		createData('Japan', '0987789990', 'Đã hoàn thành', 377973),
-	];
-
-	const getListData = async () => {
-		setDataLoading(true);
-		const res = await api.template.getListData();
+	const syncUrl = () => {
+		const currentPage = +searchParams.get('page') || 1;
+		const name = searchParams.get('name') || '';
+		setCurrentPage(currentPage);
+		setName(name);
 
 		setFirstDataLoading(false);
+	};
+	const handleSearch = () => {
+		setCurrentPage(1);
+		if (currentPage === 1) {
+			bindUrl();
+		}
+	};
+	const bindUrl = () => {
+		const localCurrentPage = currentPage || 1;
+		const localSearch = name || '';
+		setSearchParams({
+			page: localCurrentPage,
+			name: localSearch,
+		});
+	};
+	const handleChangeSearch = e => {
+		const val = e.target.value;
+		setName(val);
+	};
+	const getListData = async () => {
+		setDataLoading(true);
+		const res = await api.template.getListData({ name: name, page: currentPage, per_page: 15 });
+
 		setDataLoading(false);
 		if (!res) {
 			enqueueSnackbar('Có lỗi khi lấy danh sách dữ liệu', { variant: 'error' });
@@ -51,25 +64,66 @@ export default function ConstructionsList() {
 		try {
 			if (!res.status || res.status > 399) {
 				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				const pagination = res.data.pagination || {};
+				setTotalPage(pagination.total_page || 1);
+				setListData(res.data.data);
 			}
 		} catch (error) {}
 	};
-	const submitFormSearch = e => {
-		e.preventDefault();
-		// getListData();
-		getListData();
+	const onEdit = _data => {
+		setSelectedData(_data);
+		setOpenDialogCreate(true);
 	};
-	const handleFormFilterInput = (e, field) => {
-		setFormFilter({ ...formFilter, [field]: e.target.value });
+	const closeCU = _data => {
+		setSelectedData(null);
+		setOpenDialogCreate(false);
+	};
+	const onDelete = _data => {
+		setSelectedData(_data);
+		setOpenConfirmDialog(true);
+	};
+	const closeDelete = () => {
+		setSelectedData(null);
+		setOpenConfirmDialog(false);
+	};
+	const onSubmitDelete = async () => {
+		if (!selectedData) {
+			return;
+		}
+		setLoadingDelete(true);
+		const res = await api.template.delete(selectedData.id);
+
+		setLoadingDelete(false);
+		if (!res) {
+			enqueueSnackbar('Có lỗi khi xóa dữ liệu', { variant: 'error' });
+			return;
+		}
+		try {
+			if (!res.status || res.status > 399) {
+				enqueueSnackbar(res.statusText, { variant: 'error' });
+			} else {
+				enqueueSnackbar('Xóa thành công', { variant: 'success' });
+				getListData();
+				closeDelete();
+			}
+		} catch (error) {}
 	};
 	useEffect(() => {
-		getListData();
+		if (!firstDataLoading) {
+			bindUrl();
+		}
+	}, [currentPage]);
+
+	useEffect(() => {
+		syncUrl();
 	}, []);
+
 	useEffect(() => {
 		if (!firstDataLoading) {
 			getListData();
 		}
-	}, [currentPage]);
+	}, [firstDataLoading, location.search]);
 	return (
 		<div className='page-container'>
 			<div className='page-header'>
@@ -79,13 +133,19 @@ export default function ConstructionsList() {
 			<div className='page-filter'>
 				<Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 12, md: 12 }}>
 					<Grid item={true} xs={8} md={4}>
-						<form className='d-flex' style={{ gap: '10px' }} onSubmit={submitFormSearch}>
+						<div className='d-flex' style={{ gap: '10px' }}>
 							<TextField
 								placeholder='Tìm kiếm'
 								label=''
 								size='small'
+								value={name}
 								fullWidth={true}
-								value={formFilter.search}
+								onChange={e => handleChangeSearch(e)}
+								onKeyUp={e => {
+									if (['Enter', 'NumpadEnter'].includes(e.key)) {
+										handleSearch();
+									}
+								}}
 								InputProps={{
 									classes: {
 										input: 'font-size-14',
@@ -94,7 +154,6 @@ export default function ConstructionsList() {
 								sx={{
 									fontSize: '14px',
 								}}
-								onChange={e => handleFormFilterInput(e, 'search')}
 							/>
 							<Button
 								variant='contained'
@@ -105,11 +164,11 @@ export default function ConstructionsList() {
 								}}
 								size='medium'
 								elevation={0}
-								type='submit'
+								onClick={handleSearch}
 							>
 								Tìm kiếm
 							</Button>
-						</form>
+						</div>
 					</Grid>
 					<Grid item={true} xs={4} md={1} ml={'auto'}>
 						<Button
@@ -133,19 +192,24 @@ export default function ConstructionsList() {
 				</Grid>
 			</div>
 
-			<ContructionsTable rows={rows} onLoadData={dataLoading} isFirstLoad={firstDataLoading} />
+			<ContructionsTable
+				rows={listData}
+				onLoadData={dataLoading}
+				isFirstLoad={firstDataLoading}
+				onDelete={onDelete}
+				onEdit={onEdit}
+			/>
 			<div className='' style={{ display: 'flex', justifyContent: 'flex-end' }}>
 				<Pagination page={currentPage} setCurrentPage={setCurrentPage} total={totalPage} setTotalPage={setTotalPage} />
 			</div>
-			{/* <button
-				onClick={() => {
-					setTotalPage(totalPage + 1);
-				}}
-			>
-				Add pages {totalPage}
-			</button>
-			<p>Current page: {currentPage}</p>
-			<p>Total page: {totalPage}</p> */}
+			<ConfirmDialog
+				openDialog={openConfirmDialog}
+				setOpenDialog={setOpenConfirmDialog}
+				closeDialog={closeDelete}
+				onSubmit={onSubmitDelete}
+				message={`Bạn chắc chắn muốn xóa ${selectedData ? selectedData.name : ''} ?`}
+				loading={loadingDelete}
+			/>
 		</div>
 	);
 }

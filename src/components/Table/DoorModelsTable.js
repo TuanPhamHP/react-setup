@@ -12,11 +12,19 @@ export default function ListCard(params) {
 
 	return (
 		<Grid container spacing={{}}>
-			{listDoorModel.map(o => (
-				<Grid key={o.name} item={true} xs={6} md={3} xl={2} sx={{ p: 2 }}>
-					<DoorModels item={o} />
-				</Grid>
-			))}
+			{listDoorModel.length ? (
+				listDoorModel.map(o => (
+					<Grid key={o.name} item={true} xs={6} md={3} xl={2} sx={{ p: 2 }}>
+						<DoorModels item={o} />
+					</Grid>
+				))
+			) : (
+				<>
+					<h3 style={{ margin: '40px 16px', width: '100%' }} className='text-center'>
+						<em>Không có dữ liệu</em>
+					</h3>
+				</>
+			)}
 		</Grid>
 	);
 }
