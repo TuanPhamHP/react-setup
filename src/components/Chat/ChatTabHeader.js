@@ -1,14 +1,18 @@
 import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { useDispatch } from 'react-redux';
+import { setFilterRoomByRead } from '../../store/internal';
 
 import styles from '../../assets/styles/ChatSideBar.module.scss';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 export default function ChatTabHeader() {
 	const [value, setValue] = React.useState(0);
+	const dispatch = useDispatch();
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
+		dispatch(setFilterRoomByRead(newValue));
 	};
 
 	return (

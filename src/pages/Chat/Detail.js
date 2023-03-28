@@ -42,6 +42,7 @@ export default function ChatDetail(props) {
 			return (
 				<div key={msg.id} className={`${styles.eachMsg} ${msg.isMe ? styles.myMsg : styles.otherMsg}`}>
 					<pre className={`${styles.textContent}`}>{msg.textContent}</pre>
+					<span className={`${styles.msgTime}`}>{msg.time_dumb}</span>
 				</div>
 			);
 		});

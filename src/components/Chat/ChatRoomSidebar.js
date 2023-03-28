@@ -9,8 +9,20 @@ export default function ChatRoomSideBar(props) {
 
 	const location = useLocation();
 	const listRoom = internal.listRoom;
+	const filterRoomByRead = internal.filterRoomByRead;
+
 	const renderListRoom = () => {
-		return listRoom.map(room => {
+		const arr = listRoom.filter(o => {
+			return filterRoomByRead ? !o.read_at : true;
+		});
+		if (!arr.length) {
+			return (
+				<div className={styles.noRoom}>
+					<p className={styles.noRoomMsg}>No unread message</p>
+				</div>
+			);
+		}
+		return arr.map(room => {
 			return (
 				<Link
 					key={room.id}

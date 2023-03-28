@@ -34,6 +34,7 @@
 				margin-bottom: 8px;
 				font-size: 14px;
 				display: flex;
+				flex-direction: column;
 				.textContent {
 					white-space: normal;
 					font-family: 'Roboto';
@@ -42,6 +43,12 @@
 					border-radius: 6px;
 					margin: 0;
 					box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+					width: fit-content;
+				}
+				.msgTime {
+					font-size: 10px;
+					color: #8d8b8b;
+					margin-top: 2px;
 				}
 				&.myMsg {
 					margin-left: auto;
@@ -49,6 +56,9 @@
 						margin-left: auto;
 						background-color: rgb(208, 246, 246);
 						color: #232323;
+					}
+					.msgTime {
+						margin-left: auto;
 					}
 				}
 				&.otherMsg {

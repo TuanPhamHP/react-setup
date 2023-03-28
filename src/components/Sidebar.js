@@ -127,11 +127,13 @@ function ResponsiveAppBar() {
 								onClose={handleCloseUserMenu}
 							>
 								<MenuItem onClick={handleCloseUserMenu} sx={{ borderBottom: '1px solid #ebebeb' }}>
-									<Typography textAlign='center'>Hi, {user.user?.username} </Typography>
+									<Typography textAlign='center' fontSize='14px'>
+										Hi, {user.user?.username}{' '}
+									</Typography>
 								</MenuItem>
 
 								<MenuItem onClick={handleClickLogout}>
-									<Typography textAlign='center' color={'red'}>
+									<Typography textAlign='center' color={'red'} fontSize='14px'>
 										Logout
 									</Typography>
 								</MenuItem>
