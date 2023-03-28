@@ -1,0 +1,112 @@
+.roomWrapper {
+	color: #232323;
+	padding: 0;
+	.roomHeader {
+		height: 56px;
+		border-bottom: 1px solid #d5d5d5;
+		background-color: #fff;
+		padding: 8px 12px;
+		box-sizing: border-box;
+	}
+	.roomHeaderInfo {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		.roomName {
+			font-size: 18px;
+			font-weight: bold;
+		}
+	}
+	.roomBody {
+		display: flex;
+		position: relative;
+		flex-direction: column;
+		justify-content: center;
+		height: calc(100vh - 56px);
+		padding-right: 10px;
+		.msgContainer {
+			flex: 1;
+			height: 100%;
+			padding: 12px;
+			.eachMsg {
+				max-width: 50%;
+				margin-bottom: 8px;
+				font-size: 14px;
+				display: flex;
+				.textContent {
+					white-space: normal;
+					font-family: 'Roboto';
+					display: block;
+					padding: 8px 10px;
+					border-radius: 6px;
+					margin: 0;
+					box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+				}
+				&.myMsg {
+					margin-left: auto;
+					.textContent {
+						margin-left: auto;
+						background-color: rgb(129, 242, 242);
+						color: #232323;
+					}
+				}
+				&.otherMsg {
+					.textContent {
+						background-color: #fff;
+						color: #232323;
+					}
+				}
+			}
+		}
+		.typingContainer {
+			height: fit-content;
+			border-top: 1px solid #d5d5d5;
+			margin-top: auto;
+			display: flex;
+
+			.editorBlock {
+				display: block;
+				flex: 1;
+				height: 72px;
+				line-height: 16px;
+				font-size: 15px;
+				box-sizing: border-box;
+				resize: none;
+				padding: 6px 8px;
+				&,
+				&:focus,
+				&:focus-visible,
+				&:focus-within {
+					border: none;
+					outline: none;
+					background-color: transparent;
+				}
+				&::-webkit-scrollbar {
+					width: 8px;
+					height: 4px;
+					border-radius: 4px;
+				}
+
+				/* Track */
+				&::-webkit-scrollbar-track {
+					background: rgba(255, 255, 255, 0);
+				}
+
+				/* Handle */
+				&::-webkit-scrollbar-thumb {
+					background: rgba(136, 136, 136, 1);
+					border-radius: 4px;
+				}
+				&:hover {
+					/* Handle on hover */
+					&::-webkit-scrollbar-thumb {
+						background: rgba(136, 136, 136, 0.693);
+					}
+					&::-webkit-scrollbar {
+						height: 8px;
+					}
+				}
+			}
+		}
+	}
+}

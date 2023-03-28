@@ -144,6 +144,7 @@ const theme = createTheme({
 			primary: '#222222',
 			white: '#ffffff',
 			black: '#000',
+			main: '#222222',
 		},
 		error: {
 			main: '#D11313',

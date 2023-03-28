@@ -1,0 +1,28 @@
+.headerContainer {
+	box-sizing: border-box;
+	padding: 8px 10px 0;
+	width: 100%;
+	border-bottom: 1px solid #d5d5d5;
+}
+
+.boxSearch {
+	input,
+	input:focus,
+	input:focus-visible,
+	input:focus-within {
+		border: none;
+		outline: none;
+		background-color: transparent;
+	}
+	border: 1px solid #d5d5d5;
+	border-radius: 4px;
+	padding: 4px 8px;
+	background-color: #f0efef;
+	&:focus-within {
+		background-color: #fff;
+		border-color: #1976d2;
+	}
+}
+.boxTypes {
+	margin-top: 12px;
+}

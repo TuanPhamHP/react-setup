@@ -1,7 +1,7 @@
 import './App.css';
 import './assets/styles/App.scss';
 
-import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 import ProtectedRouteF from './components/ProtectedRoute';
 import LayoutStyles from './assets/styles/Layout.module.scss';
 
@@ -17,20 +17,7 @@ import api from './services/index';
 
 import Home from './pages/Home';
 import HomePage from './pages/HomePage';
-import ConstructionsList from './pages/Constructions/List';
-import ConstructionsDetail from './pages/Constructions/Detail';
-import ConstructionsCreate from './pages/Constructions/Create';
-
-import DoorModelsList from './pages/DoorModels/List';
-
-import Supplies from './pages/Supplies/Supplies';
-import SuppliesAl from './pages/Supplies/Al';
-import SuppliesGlass from './pages/Supplies/Glass';
-import SuppliesAccessory from './pages/Supplies/Accessory';
-import SuppliesExtra from './pages/Supplies/Extra';
-
-import EmployeesList from './pages/Employees/List';
-
+import ChatDetail from './pages/Chat/Detail';
 import Login from './pages/Login';
 import Error from './pages/Error';
 import NoMatch from './pages/NoMatch';
@@ -143,135 +130,54 @@ function App() {
 	};
 
 	return (
-		<div className={`layout ${LayoutStyles.container}`}>
-			<div className='main'>
+		<div className={`layout `}>
+			<div className={`main ${LayoutStyles.container}`}>
 				<Router>
-					{authUser.user ? <Header /> : <></>}
+					{authUser.user ? <Sidebar /> : <></>}
 
-					<Routes>
-						<Route
-							exact
-							path='/'
-							element={
-								<ProtectedRoute>
-									<HomePage />
-								</ProtectedRoute>
-							}
-							errorElement=<Error />
-						/>
-						<Route
-							path='/cong-trinh'
-							element={
-								<ProtectedRoute>
-									<ConstructionsList />
-								</ProtectedRoute>
-							}
-							errorElement=<Error />
-						/>
-						<Route
-							path='/cong-trinh/them-moi'
-							element={
-								<ProtectedRoute expectedPath='/cong-trinh/them-moi'>
-									<ConstructionsCreate />
-								</ProtectedRoute>
-							}
-							errorElement=<Error />
-						/>
-						<Route
-							path='/cong-trinh/:id'
-							element={
-								<ProtectedRoute expectedPath='/cong-trinh/:id'>
-									<ConstructionsDetail />
-								</ProtectedRoute>
-							}
-							errorElement=<Error />
-						/>
-						<Route
-							path='/mau-cua'
-							element={
-								<ProtectedRoute expectedPath='/mau-cua'>
-									<DoorModelsList />
-								</ProtectedRoute>
-							}
-							errorElement=<Error />
-						/>
-						<Route
-							path='/vat-tu'
-							element={
-								<ProtectedRoute>
-									<Supplies />
-								</ProtectedRoute>
-							}
-							errorElement=<Error />
-						>
+					<div className='ref' style={{ flex: 1 }}>
+						<Routes>
 							<Route
-								path='nhom'
+								exact
+								path='/'
 								element={
 									<ProtectedRoute>
-										<SuppliesAl />
+										<HomePage />
+									</ProtectedRoute>
+								}
+								errorElement=<Error />
+							/>
+
+							<Route
+								path='/chat/:id'
+								element={
+									<ProtectedRoute expectedPath='/chat/:id'>
+										<ChatDetail />
 									</ProtectedRoute>
 								}
 								errorElement=<Error />
 							/>
 							<Route
-								path='kinh'
+								path='/home'
 								element={
 									<ProtectedRoute>
-										<SuppliesGlass />
+										<Home />
 									</ProtectedRoute>
 								}
 								errorElement=<Error />
 							/>
+							<Route path='/login' element={<Login />} errorElement=<Error /> />
+
 							<Route
-								path='phu-kien'
+								path='*'
 								element={
 									<ProtectedRoute>
-										<SuppliesAccessory />
+										<NoMatch />
 									</ProtectedRoute>
 								}
-								errorElement=<Error />
-							/>
-							<Route
-								path='vat-tu-phu'
-								element={
-									<ProtectedRoute>
-										<SuppliesExtra />
-									</ProtectedRoute>
-								}
-								errorElement=<Error />
-							/>
-						</Route>
-
-						<Route
-							path='/nhan-vien'
-							element={
-								<ProtectedRoute>
-									<EmployeesList />
-								</ProtectedRoute>
-							}
-							errorElement=<Error />
-						/>
-
-						<Route
-							path='/home'
-							element={
-								<ProtectedRoute>
-									<Home />
-								</ProtectedRoute>
-							}
-							errorElement=<Error />
-						/>
-						<Route path='/login' element={<Login />} errorElement=<Error /> />
-
-						<Route
-							path='*'
-							element={
-								<ProtectedRoute>
-									<NoMatch />
-								</ProtectedRoute>
-							}
-						></Route>
-					</Routes>
+							></Route>
+						</Routes>
+					</div>
 				</Router>
 			</div>
 		</div>
