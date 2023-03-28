@@ -21,12 +21,13 @@ export default function ChatDetail(props) {
 	const listMsg = internal.listMsg;
 	const handleKeyPress = e => {
 		if (e.key === 'Enter' && !e.shiftKey) {
+			e.preventDefault();
 			if (e.target.value.trim()) {
 				dispatch(
 					pushMsg({
 						id: new Date().getTime(),
 						type: 'text',
-						textContent: e.target.value,
+						textContent: e.target.value.trim(),
 						sender: { id: 3, name: 'Me' },
 						rId: id,
 						created_at: new Date().getTime(),
@@ -47,7 +48,7 @@ export default function ChatDetail(props) {
 				pushMsg({
 					id: new Date().getTime(),
 					type: 'text',
-					textContent: input.value,
+					textContent: input.value.trim(),
 					sender: { id: 3, name: 'Me' },
 					rId: id,
 					created_at: new Date().getTime(),
