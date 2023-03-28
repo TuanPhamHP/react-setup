@@ -141,7 +141,7 @@ export default function FullWidthTabs() {
 				navigate('/');
 				return;
 			}
-			enqueueSnackbar('Thông tin đăng nhập không chính xác. Vui lòng thử lại', { variant: 'error' });
+			enqueueSnackbar('Login failed try again', { variant: 'error' });
 			setLoadingLogin(false);
 		}, 2000);
 	};
@@ -167,7 +167,7 @@ export default function FullWidthTabs() {
 		const res = await api.user.loginUser(body);
 		setLoadingLogin(false);
 		if (!res) {
-			enqueueSnackbar('Đăng nhập thất bại. Liên hệ IT để được hỗ trợ. Code 01', { variant: 'error' });
+			enqueueSnackbar('Login Failed. Code 01', { variant: 'error' });
 		}
 		try {
 			if (res.status && res.status > 199 && res.status < 400) {
@@ -190,11 +190,11 @@ export default function FullWidthTabs() {
 				navigate('/');
 				return;
 			} else {
-				const msg = 'Đăng nhập thất bại: ' + (res.data.message || String(res)) + ' Code 02';
+				const msg = 'Login Failed: ' + (res.data.message || String(res)) + ' Code 02';
 				enqueueSnackbar(msg, { variant: 'error' });
 			}
 		} catch (error) {
-			const msg = 'Đăng nhập thất bại: ' + String(error) + ' Code 03';
+			const msg = 'Login Failed: ' + String(error) + ' Code 03';
 			console.log(msg);
 		}
 	};
@@ -232,19 +232,6 @@ export default function FullWidthTabs() {
 				}}
 			>
 				<Box sx={{ bgcolor: 'background.paper', width: '100%' }}>
-					<AppBar position='static' elevation={0} color={'text'}>
-						<Tabs
-							value={value}
-							onChange={handleChange}
-							indicatorColor='secondary'
-							textColor='inherit'
-							variant='fullWidth'
-							aria-label='full width tabs example'
-						>
-							<Tab label='Đăng Nhập' {...a11yProps(0)} />
-							<Tab label='Đăng Ký' {...a11yProps(1)} />
-						</Tabs>
-					</AppBar>
 					<SwipeableViews
 						axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
 						index={value}
@@ -257,8 +244,8 @@ export default function FullWidthTabs() {
 										error={!!formError.username}
 										helperText={getErrorMessage(formError.username)}
 										type='text'
-										placeholder='Tài khoản'
-										label='Tài khoản'
+										placeholder='Username'
+										label='Username'
 										value={formLogin.username}
 										onKeyUp={handleUsernameEnter}
 										onChange={e => {
@@ -275,8 +262,8 @@ export default function FullWidthTabs() {
 										helperText={getErrorMessage(formError.password)}
 										type={showPassword ? 'text' : 'password'}
 										value={formLogin.password}
-										placeholder='Mật khẩu'
-										label='Mật khẩu'
+										placeholder='Password'
+										label='Password'
 										fullWidth={true}
 										onChange={e => {
 											handlerFormLoginInput(e, 'password');
@@ -300,7 +287,7 @@ export default function FullWidthTabs() {
 								</FormControl>
 								<FormControlLabel
 									control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
-									label='Ghi nhớ tài khoản'
+									label='Remember me'
 								/>
 								<Button
 									variant='contained'
@@ -315,7 +302,7 @@ export default function FullWidthTabs() {
 									}}
 									onClick={handleLogin}
 								>
-									{loadingLogin ? <CircularProgress color='grey' size={24} sx={{ margin: 0 }} /> : <>Đăng nhập</>}
+									{loadingLogin ? <CircularProgress color='grey' size={24} sx={{ margin: 0 }} /> : <>Login</>}
 								</Button>
 							</div>
 						</TabPanel>

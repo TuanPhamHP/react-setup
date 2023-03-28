@@ -37,6 +37,27 @@ export default function ChatDetail(props) {
 			}
 		}
 	};
+	const submitMsg = () => {
+		const input = document.querySelector('#inAppEditor');
+		if (!input) {
+			return;
+		}
+		if (input.value.trim()) {
+			dispatch(
+				pushMsg({
+					id: new Date().getTime(),
+					type: 'text',
+					textContent: input.value,
+					sender: { id: 3, name: 'Me' },
+					rId: id,
+					created_at: new Date().getTime(),
+					isMe: true,
+				})
+			);
+			input.value = '';
+			input.focus();
+		}
+	};
 	const renderListMsg = () => {
 		return roomMsg.map(msg => {
 			return (
@@ -78,6 +99,7 @@ export default function ChatDetail(props) {
 				<div className={`${styles.msgContainer}`}>{renderListMsg()}</div>
 				<div className={`${styles.typingContainer}`}>
 					<textarea
+						id='inAppEditor'
 						className={`${styles.editorBlock}`}
 						placeholder='Type and send your message'
 						onKeyUp={e => {
@@ -87,6 +109,7 @@ export default function ChatDetail(props) {
 					<IconButton
 						sx={{ padding: '4px', marginRight: '4px', boxSizing: 'border-box', height: 'auto' }}
 						color={'primary'}
+						onClick={submitMsg}
 					>
 						<SendTwoToneIcon sx={{ transform: 'rotateZ(-45deg)' }} />
 					</IconButton>
