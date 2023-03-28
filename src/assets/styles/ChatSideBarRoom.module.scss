@@ -14,10 +14,17 @@
 			display: flex;
 			flex-direction: column;
 			margin: 0;
+			width: 100%;
 		}
 		.roomName {
 			font-weight: 500;
 			font-size: 15px;
+		}
+		.roomTime {
+			font-weight: 400;
+			font-size: 11px;
+			color: #8d8b8b;
+			margin-left: auto;
 		}
 		.roomLastMessageContent {
 			font-size: 13px;
@@ -34,6 +41,9 @@
 			.roomLastMessageContent {
 				color: #232323;
 			}
+		}
+		&.isActiveRoom {
+			background-color: #e3e3e39f;
 		}
 	}
 }

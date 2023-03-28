@@ -21,6 +21,7 @@ export const internalSlice = createSlice({
 					content: 'Hi! Can i have more photos about this product?',
 					images: [],
 					created_at: '2023-03-28T15:07:33',
+					created_at_dump: '15:07',
 					type: 'text',
 				},
 			},
@@ -37,6 +38,24 @@ export const internalSlice = createSlice({
 					content: 'How can i buy this?',
 					images: [],
 					created_at: '2023-03-28T11:07:33',
+					created_at_dump: '16:18',
+					type: 'text',
+				},
+			},
+			{
+				id: '67867fvffn3432',
+				name: 'Kelly',
+				read_at: null,
+				listUser: [
+					{ id: 11, name: 'Kelly' },
+					{ id: 2, name: 'Sarah' },
+				],
+				lastMsg: {
+					user: { id: 11, name: 'Kelly' },
+					content: 'I want to buy this',
+					images: [],
+					created_at: '2023-03-28T11:01:33',
+					created_at_dump: '11:01 28/03',
 					type: 'text',
 				},
 			},
@@ -92,6 +111,14 @@ export const internalSlice = createSlice({
 				rId: '560897jld389',
 				created_at: '2023-03-28T11:07:33',
 			},
+			{
+				id: 11,
+				type: 'text',
+				textContent: 'I want to buy this',
+				sender: { id: 1, name: 'Kelly' },
+				rId: '67867fvffn3432',
+				created_at: '2023-03-28T11:07:33',
+			},
 		],
 	},
 	reducers: {
@@ -104,9 +131,16 @@ export const internalSlice = createSlice({
 		pushMsg: (state, action) => {
 			state.listMsg.push(action.payload);
 		},
+		setRoomReadAt: (state, action) => {
+			const idx = state.listRoom.findIndex(o => o.id === action.payload);
+
+			if (idx !== -1) {
+				state.listRoom[idx].read_at = true;
+			}
+		},
 	},
 });
-export const { setListAlStyles, setListAlSystems, pushMsg } = internalSlice.actions;
+export const { setListAlStyles, setListAlSystems, pushMsg, setRoomReadAt } = internalSlice.actions;
 
 export const selectInternal = state => state.internal;
 

@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import styles from '../../assets/styles/ChatRoomDetail.module.scss';
 import { Avatar, IconButton } from '@mui/material';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { selectInternal, pushMsg } from '../../store/internal';
+import { selectInternal, pushMsg, setRoomReadAt } from '../../store/internal';
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 
-export default function ConstructionsDetail(props) {
+export default function ChatDetail(props) {
 	const location = useLocation();
 	let { id } = useParams();
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const [room, setRoom] = useState({});
 	const [roomMsg, setRoomMsg] = useState([]);
@@ -39,7 +40,7 @@ export default function ConstructionsDetail(props) {
 	const renderListMsg = () => {
 		return roomMsg.map(msg => {
 			return (
-				<div className={`${styles.eachMsg} ${msg.isMe ? styles.myMsg : styles.otherMsg}`}>
+				<div key={msg.id} className={`${styles.eachMsg} ${msg.isMe ? styles.myMsg : styles.otherMsg}`}>
 					<pre className={`${styles.textContent}`}>{msg.textContent}</pre>
 				</div>
 			);
@@ -48,10 +49,14 @@ export default function ConstructionsDetail(props) {
 	useEffect(() => {
 		const room = listRoom.find(o => o.id === id);
 		const roomMsg = listMsg.filter(o => o.rId === id);
+
+		dispatch(setRoomReadAt(id));
 		if (room) {
 			setRoom(room);
+		} else {
+			navigate('/');
 		}
-		if (roomMsg.length) {
+		if (roomMsg) {
 			setRoomMsg(roomMsg);
 		}
 	}, [id, listMsg, listRoom]);
@@ -78,7 +83,10 @@ export default function ConstructionsDetail(props) {
 							handleKeyPress(e);
 						}}
 					></textarea>
-					<IconButton sx={{ padding: '4px', boxSizing: 'border-box', height: 'auto' }} color={'primary'}>
+					<IconButton
+						sx={{ padding: '4px', marginRight: '4px', boxSizing: 'border-box', height: 'auto' }}
+						color={'primary'}
+					>
 						<SendTwoToneIcon sx={{ transform: 'rotateZ(-45deg)' }} />
 					</IconButton>
 				</div>
