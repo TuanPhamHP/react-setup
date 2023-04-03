@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import styles from '../../assets/styles/ChatRoomDetail.module.scss';
 import { Avatar, IconButton } from '@mui/material';
 
@@ -7,8 +7,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectInternal, pushMsg, setRoomReadAt } from '../../store/internal';
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 
+// firebase
+import { getDocs, collection, query, where, orderBy, onSnapshot, limit } from '@firebase/firestore';
+import firestore from '../../plugins/firebase_setup';
+import { getLmTime } from '../../helpers/chat';
+
 export default function ChatDetail(props) {
-	const location = useLocation();
 	let { id } = useParams();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -18,7 +22,7 @@ export default function ChatDetail(props) {
 
 	const internal = useSelector(selectInternal);
 	const listRoom = internal.listRoom;
-	const listMsg = internal.listMsg;
+	const roomSetupPhase = internal.roomSetupPhase;
 	const handleKeyPress = e => {
 		if (e.key === 'Enter' && !e.shiftKey) {
 			e.preventDefault();
@@ -38,6 +42,25 @@ export default function ChatDetail(props) {
 			}
 		}
 	};
+	const fetchListMsg = async () => {
+		const ar = [];
+		const q = query(
+			collection(firestore, 'messages'),
+			where('conversationId', '==', id),
+			orderBy('timestamp', 'asc'),
+			limit(100)
+		);
+		const querySnapshot = await getDocs(q);
+
+		querySnapshot.forEach(doc => {
+			ar.push({
+				_id: doc.id,
+				...doc.data(),
+			});
+		});
+		setRoomMsg(ar);
+	};
+
 	const submitMsg = () => {
 		const input = document.querySelector('#inAppEditor');
 		if (!input) {
@@ -59,30 +82,33 @@ export default function ChatDetail(props) {
 			input.focus();
 		}
 	};
+
 	const renderListMsg = () => {
 		return roomMsg.map(msg => {
 			return (
-				<div key={msg.id} className={`${styles.eachMsg} ${msg.isMe ? styles.myMsg : styles.otherMsg}`}>
-					<pre className={`${styles.textContent}`}>{msg.textContent}</pre>
-					<span className={`${styles.msgTime}`}>{msg.time_dumb}</span>
+				<div key={msg._id} className={`${styles.eachMsg} ${msg.isMe ? styles.myMsg : styles.otherMsg}`}>
+					<pre className={`${styles.textContent}`}>{msg.text}</pre>
+					<span className={`${styles.msgTime}`}>{getLmTime(msg.timestamp)}</span>
 				</div>
 			);
 		});
 	};
 	useEffect(() => {
-		const room = listRoom.find(o => o.id === id);
-		const roomMsg = listMsg.filter(o => o.rId === id);
-
+		if (!roomSetupPhase) {
+			return;
+		}
+		const room = listRoom.find(o => o.conversationId === id);
 		dispatch(setRoomReadAt(id));
 		if (room) {
 			setRoom(room);
 		} else {
 			navigate('/');
 		}
-		if (roomMsg) {
-			setRoomMsg(roomMsg);
-		}
-	}, [id, listMsg, listRoom]);
+	}, [id, listRoom, roomSetupPhase]);
+
+	useEffect(() => {
+		fetchListMsg();
+	}, [room]);
 
 	return (
 		<div className={`${styles.roomWrapper}`}>
@@ -92,7 +118,7 @@ export default function ChatDetail(props) {
 						<Avatar alt={'User avatar'} src={room.id ? room.listUser[0]?.avatar : ''} sx={{ width: 38, height: 38 }} />
 					</div>
 					<div>
-						<span className={`${styles.roomName}`}>{room.name}</span>
+						<span className={`${styles.roomName}`}>{room.recipientId}</span>
 					</div>
 				</div>
 			</div>

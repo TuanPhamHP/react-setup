@@ -17,7 +17,7 @@ export default function NoMatch() {
 						maxWidth: '400px',
 					}}
 				/>
-				<h1>Xin lỗi, chúng tôi không tìm thấy trang này.</h1>
+				<h1>Sorry, We cannot found this page :(</h1>
 			</div>
 		</>
 	);

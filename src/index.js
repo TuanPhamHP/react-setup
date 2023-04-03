@@ -14,11 +14,7 @@ import { setToken, setUser, selectUser } from './store/userAuth';
 import api from './services/index';
 
 // Route & Pages
-
-import DefaultLayout from './layouts/DefaultLayout';
 import App from './App';
-import Home from './pages/Home';
-import HomeDetail from './pages/HomeDetail';
 import Login from './pages/Login';
 import Error from './pages/Error';
 import {
@@ -87,25 +83,6 @@ const router = createBrowserRouter([
 		path: '/login',
 		element: <Login />,
 		errorElement: <Error />,
-	},
-	{
-		path: '/home',
-		element: (
-			<ProtectedRoute>
-				<Home />
-			</ProtectedRoute>
-		),
-		errorElement: <Error />,
-		children: [
-			{
-				path: '/home/:homeId',
-				element: (
-					<ProtectedRoute>
-						<HomeDetail />
-					</ProtectedRoute>
-				),
-			},
-		],
 	},
 ]);
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -242,11 +242,12 @@ export default function FullWidthTabs() {
 								<FormControl fullWidth={true} sx={{ m: '12px 0', p: 0 }} variant='outlined'>
 									<TextField
 										error={!!formError.username}
+										id='loginHeader'
 										helperText={getErrorMessage(formError.username)}
 										type='text'
 										placeholder='Username'
 										label='Username'
-										value={formLogin.username}
+										defaultValue={formLogin.username}
 										onKeyUp={handleUsernameEnter}
 										onChange={e => {
 											handlerFormLoginInput(e, 'username');

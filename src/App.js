@@ -2,15 +2,13 @@ import './App.css';
 import './assets/styles/App.scss';
 
 import Sidebar from './components/Sidebar';
-import ProtectedRouteF from './components/ProtectedRoute';
 import LayoutStyles from './assets/styles/Layout.module.scss';
 
 // Redux
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser, selectUser } from './store/userAuth';
-import { setListAlStyles, setListAlSystems } from './store/internal';
-import { useSnackbar } from 'notistack';
+import { setListRoom, setRoomSetupPhase } from './store/internal';
 import api from './services/index';
 
 // Route & Pages
@@ -32,54 +30,37 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { useEffect } from 'react';
+
+// firebase
+import { getDocs, collection, query, where, onSnapshot } from '@firebase/firestore';
+import firestore from './plugins/firebase_setup';
+
 function App() {
 	const authUser = useSelector(selectUser);
-	const { enqueueSnackbar } = useSnackbar();
 	const dispatch = useDispatch();
-	const getListAlTypes = async () => {
-		const res = await api.aluminum.getListAlTypes({ pagination: false });
-		if (!res) {
-			enqueueSnackbar('Có lỗi khi lấy danh sách kiểu nhôm', { variant: 'error' });
-			return;
-		}
-		try {
-			if (!res.status || res.status > 399) {
-				enqueueSnackbar(res.statusText, { variant: 'error' });
-			} else {
-				dispatch(setListAlStyles(res.data.data));
-			}
-		} catch (error) {
-			enqueueSnackbar(`Có lỗi khi lấy danh sách kiểu nhôm: ${error}`, { variant: 'error' });
-		}
-	};
-	const getListAlProfiles = async () => {
-		const res = await api.aluminum.getListAlProfiles({ pagination: false });
-		if (!res) {
-			enqueueSnackbar('Có lỗi khi lấy danh sách kiểu nhôm', { variant: 'error' });
-			return;
-		}
-		try {
-			if (!res.status || res.status > 399) {
-				enqueueSnackbar(res.statusText, { variant: 'error' });
-			} else {
-				dispatch(setListAlSystems(res.data.data));
-			}
-		} catch (error) {
-			enqueueSnackbar(`Có lỗi khi lấy danh sách kiểu nhôm: ${error}`, { variant: 'error' });
-		}
+	const fetchLm = async () => {
+		const ar = [];
+		const q = query(collection(firestore, 'conversations'));
+		const querySnapshot = await getDocs(q);
+
+		querySnapshot.forEach(doc => {
+			ar.push(doc.data());
+		});
+		dispatch(setRoomSetupPhase(1));
+		dispatch(setListRoom(ar));
 	};
 	useEffect(() => {
 		if (authUser.user) {
-			getListAlTypes();
-			getListAlProfiles();
 		}
 	}, [authUser]);
+	useEffect(() => {
+		onSnapshot(collection(firestore, 'conversations'), snapshot => {});
+		fetchLm();
+	}, []);
 	const ProtectedRoute = ({ expectedPath, redirectPath = '/login', children }) => {
 		const currentToken = getCookie('token', true) || getSession('token', true);
 		const dispatch = useDispatch();
 		const navigate = useNavigate();
-		const location = useLocation();
-
 		const getUser = async token => {
 			const res = await api.user.getUserInfo(token);
 
@@ -110,22 +91,23 @@ function App() {
 				return;
 			}
 		};
-		// useEffect(() => {
-		// 	first
 
-		// 	return () => {
-		// 		second
-		// 	}
-		// }, [third])
 		if (authUser.user) {
 			// logged
 			return children ? children : <Outlet />;
 		} else {
-			if (currentToken) {
-				getUser(currentToken);
-			} else {
-				return <Navigate to={redirectPath} replace />;
-			}
+			setUser({
+				name: 'Admin',
+				email: 'admin@gmail.com',
+				token: 'faketoken',
+			});
+			return children ? children : <Outlet />;
+			// real auth but disabled
+			// if (currentToken) {
+			// 	getUser(currentToken);
+			// } else {
+			// 	return <Navigate to={redirectPath} replace />;
+			// }
 		}
 	};
 
@@ -133,7 +115,8 @@ function App() {
 		<div className={`layout `}>
 			<div className={`main ${LayoutStyles.container}`}>
 				<Router>
-					{authUser.user ? <Sidebar /> : <></>}
+					{/* {authUser.user ? <Sidebar /> : <></>} */}
+					<Sidebar />
 
 					<div className='ref' style={{ flex: 1 }}>
 						<Routes>
@@ -147,7 +130,16 @@ function App() {
 								}
 								errorElement=<Error />
 							/>
-
+							<Route
+								exact
+								path='/chat'
+								element={
+									<ProtectedRoute>
+										<HomePage />
+									</ProtectedRoute>
+								}
+								errorElement=<Error />
+							/>
 							<Route
 								path='/chat/:id'
 								element={

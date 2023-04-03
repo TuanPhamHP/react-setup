@@ -147,7 +147,7 @@ function ResponsiveAppBar() {
 					</Toolbar>
 				</Drawer>
 			</div>
-			<div style={{ flex: 1 }}>
+			<div style={{ flex: 1, maxWidth: '270px' }}>
 				<ChatTabHeader />
 				<ChatRoomSidebar />
 			</div>
