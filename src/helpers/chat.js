@@ -28,15 +28,16 @@ export const getLmTime = _lm => {
 	const curentH = new Date().getHours();
 
 	const time = new Date(_lm);
+	const now = new Date();
 	const hours = time.getHours().toString().padStart(2, '0');
 	const min = time.getMinutes().toString().padStart(2, '0');
 	const date = time.getDate().toString().padStart(2, '0');
 	const month = (time.getMonth() + 1).toString().padStart(2, '0');
 	let str = '';
-	if (gap < curentH * 60 * 60 * 1000) {
+	if (date === now.getDate().toString().padStart(2, '0')) {
 		str = `Today ${hours}:${min}`;
-	} else if (gap < 48 * 60 * 60 * 1000) {
-		str = `Today ${hours}:${min}`;
+	} else if (+date + 1 === +now.getDate().toString().padStart(2, '0')) {
+		str = `Yesterday ${hours}:${min}`;
 	} else {
 		str = `${date}/${month} ${hours}:${min}`;
 	}
