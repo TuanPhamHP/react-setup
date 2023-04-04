@@ -35,7 +35,7 @@ export const getLmTime = _lm => {
 	const month = (time.getMonth() + 1).toString().padStart(2, '0');
 	let str = '';
 	if (date === now.getDate().toString().padStart(2, '0')) {
-		str = `Today ${hours}:${min}`;
+		str = `${hours}:${min}`;
 	} else if (+date + 1 === +now.getDate().toString().padStart(2, '0')) {
 		str = `Yesterday ${hours}:${min}`;
 	} else {

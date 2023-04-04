@@ -3,7 +3,7 @@ const userRepo = axios => {
 	return {
 		getListData(payload = {}) {
 			return axios
-				.get(`${REACT_APP_API_BASE_URL}/accessories`, {
+				.get(`${REACT_APP_API_BASE_URL}/materials`, {
 					params: payload,
 				})
 				.then(res => {
@@ -13,9 +13,9 @@ const userRepo = axios => {
 					return err.response;
 				});
 		},
-		create(payload) {
+		postMessage(payload) {
 			return axios
-				.post(`${REACT_APP_API_BASE_URL}/accessories`, payload)
+				.post(`https://botchat-1-1-ttekbdw6vq-uc.a.run.app/messages`, payload)
 				.then(res => {
 					return res;
 				})
@@ -26,7 +26,7 @@ const userRepo = axios => {
 		delete(_id) {
 			return axios({
 				method: 'DELETE',
-				url: `${REACT_APP_API_BASE_URL}/accessories/${_id}`,
+				url: `${REACT_APP_API_BASE_URL}/materials/${_id}`,
 			})
 				.then(res => {
 					return res;
@@ -37,7 +37,7 @@ const userRepo = axios => {
 		},
 		update(payload, id) {
 			return axios
-				.put(`${REACT_APP_API_BASE_URL}/accessories/${id}`, payload)
+				.put(`${REACT_APP_API_BASE_URL}/materials/${id}`, payload)
 				.then(res => {
 					return res;
 				})

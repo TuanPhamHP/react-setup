@@ -9,12 +9,15 @@ export const internalSlice = createSlice({
 		token: '',
 		filterRoomByRead: 0, // 0 all, 1 unread
 		listRoom: [],
-		listMsg: [],
+		roomMsg: [],
 		roomSetupPhase: 0, // 0: fetching, 1: succes, 2:failed
 	},
 	reducers: {
 		pushMsg: (state, action) => {
-			state.listMsg.push(action.payload);
+			state.roomMsg.push(action.payload);
+		},
+		setCurrentRoomMsg: (state, action) => {
+			state.roomMsg = action.payload;
 		},
 		setRoomSetupPhase: (state, action) => {
 			state.roomSetupPhase = action.payload;
@@ -34,7 +37,8 @@ export const internalSlice = createSlice({
 		},
 	},
 });
-export const { setListRoom, pushMsg, setRoomReadAt, setFilterRoomByRead, setRoomSetupPhase } = internalSlice.actions;
+export const { setCurrentRoomMsg, setListRoom, pushMsg, setRoomReadAt, setFilterRoomByRead, setRoomSetupPhase } =
+	internalSlice.actions;
 
 export const selectInternal = state => state.internal;
 

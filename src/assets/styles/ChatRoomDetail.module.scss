@@ -1,6 +1,8 @@
 .roomWrapper {
 	color: #232323;
 	padding: 0;
+	max-height: 100vh;
+	overflow: hidden;
 	.roomHeader {
 		height: 56px;
 		border-bottom: 1px solid #d5d5d5;
@@ -29,41 +31,56 @@
 			flex: 1;
 			height: 100%;
 			padding: 12px;
+			max-height: calc(100vh - 56px - 72px - 16px - 8px);
+			overflow-y: scroll;
 			.eachMsg {
 				max-width: 50%;
 				margin-bottom: 8px;
 				font-size: 14px;
 				display: flex;
 				flex-direction: column;
+				.bodyMsg {
+					padding: 8px 10px;
+					border-radius: 6px;
+					box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+					background-color: #fff;
+					width: fit-content;
+					min-width: 50px;
+				}
 				.textContent {
 					font-family: 'Roboto';
 					display: block;
-					padding: 8px 10px;
-					border-radius: 6px;
 					margin: 0;
-					box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 					width: fit-content;
+					white-space: break-spaces !important;
+					word-break: break-word;
 				}
 				.msgTime {
+					display: block;
+					margin-top: 6px;
 					font-size: 10px;
 					color: #8d8b8b;
-					margin-top: 2px;
 				}
 				&.myMsg {
 					margin-left: auto;
-					.textContent {
+					.bodyMsg {
 						margin-left: auto;
 						background-color: rgb(208, 246, 246);
-						color: #232323;
+						.textContent {
+							color: #232323;
+						}
 					}
+
 					.msgTime {
 						margin-left: auto;
 					}
 				}
 				&.otherMsg {
-					.textContent {
+					.bodyMsg {
 						background-color: #fff;
-						color: #232323;
+						.textContent {
+							color: #232323;
+						}
 					}
 				}
 			}

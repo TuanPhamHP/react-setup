@@ -1,11 +1,6 @@
 import axios from 'axios';
 import user from './user';
-import template from './template';
-import aluminum from './aluminum';
-import glass from './glass';
-import supply from './supply';
-import accessory from './accessory';
-import admins from './admins';
+import chat from './chat';
 
 import { deleteCookie } from '../helpers/customizeCookie';
 const onCatch = err => {
@@ -24,12 +19,7 @@ const onCatch = err => {
 const services = (axios => {
 	return {
 		user: user(axios),
-		template: template(axios),
-		aluminum: aluminum(axios),
-		glass: glass(axios),
-		supply: supply(axios),
-		accessory: accessory(axios),
-		admins: admins(axios),
+		chat: chat(axios),
 	};
 })(axios);
 export default services;

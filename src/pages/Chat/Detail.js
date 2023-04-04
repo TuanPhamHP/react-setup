@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import styles from '../../assets/styles/ChatRoomDetail.module.scss';
 import { Avatar, IconButton } from '@mui/material';
+import api from '../../services/index';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { selectInternal, pushMsg, setRoomReadAt } from '../../store/internal';
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 
 // firebase
-import { getDocs, collection, query, where, orderBy, onSnapshot, limit } from '@firebase/firestore';
+import { getDocs, collection, query, where, orderBy, onSnapshot, limit, doc } from '@firebase/firestore';
 import firestore from '../../plugins/firebase_setup';
 import { getLmTime } from '../../helpers/chat';
 
 export default function ChatDetail(props) {
-	let { id } = useParams();
+	const { id } = useParams();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -23,63 +24,39 @@ export default function ChatDetail(props) {
 	const internal = useSelector(selectInternal);
 	const listRoom = internal.listRoom;
 	const roomSetupPhase = internal.roomSetupPhase;
-	const handleKeyPress = e => {
+	const scrollToBottom = () => {
+		try {
+			const t = document.querySelector('#msgContainer');
+			t.scrollTo(0, t.scrollHeight);
+		} catch (error) {}
+	};
+	const handleKeyPress = async e => {
 		if (e.key === 'Enter' && !e.shiftKey) {
 			e.preventDefault();
 			if (e.target.value.trim()) {
-				dispatch(
-					pushMsg({
-						id: new Date().getTime(),
-						type: 'text',
-						textContent: e.target.value.trim(),
-						sender: { id: 3, name: 'Me' },
-						rId: id,
-						created_at: new Date().getTime(),
-						isMe: true,
-					})
-				);
+				const msg = {
+					message: e.target.value.trim(),
+					recipientId: room.senderId,
+				};
 				e.target.value = '';
+				const res = await api.chat.postMessage(msg);
 			}
 		}
 	};
-	const fetchListMsg = async () => {
-		const ar = [];
-		const q = query(
-			collection(firestore, 'messages'),
-			where('conversationId', '==', id),
-			orderBy('timestamp', 'asc'),
-			limit(100)
-		);
-		const querySnapshot = await getDocs(q);
 
-		querySnapshot.forEach(doc => {
-			ar.push({
-				_id: doc.id,
-				...doc.data(),
-			});
-		});
-		setRoomMsg(ar);
-	};
-
-	const submitMsg = () => {
+	const submitMsg = async () => {
 		const input = document.querySelector('#inAppEditor');
 		if (!input) {
 			return;
 		}
 		if (input.value.trim()) {
-			dispatch(
-				pushMsg({
-					id: new Date().getTime(),
-					type: 'text',
-					textContent: input.value.trim(),
-					sender: { id: 3, name: 'Me' },
-					rId: id,
-					created_at: new Date().getTime(),
-					isMe: true,
-				})
-			);
+			const msg = {
+				message: input.value.trim(),
+				recipientId: room.senderId,
+			};
 			input.value = '';
 			input.focus();
+			const res = await api.chat.postMessage(msg);
 		}
 	};
 
@@ -87,13 +64,26 @@ export default function ChatDetail(props) {
 		return roomMsg.map(msg => {
 			return (
 				<div key={msg._id} className={`${styles.eachMsg} ${msg.isMe ? styles.myMsg : styles.otherMsg}`}>
-					<pre className={`${styles.textContent}`}>{msg.text}</pre>
-					<span className={`${styles.msgTime}`}>{getLmTime(msg.timestamp)}</span>
+					<div className={`${styles.bodyMsg}`}>
+						<pre className={`${styles.textContent}`}>{msg.text}</pre>
+						<span className={`${styles.msgTime}`}>{getLmTime(msg.timestamp)}</span>
+					</div>
 				</div>
 			);
 		});
 	};
+	const pushNewMsg = msg => {
+		setRoomMsg(prev => {
+			const cr = prev.map(o => o._id);
+			if (cr.includes(msg._id)) {
+				return [...prev];
+			}
+			return [...prev, msg];
+		});
+	};
 	useEffect(() => {
+		setRoomMsg([]);
+		setRoom({});
 		if (!roomSetupPhase) {
 			return;
 		}
@@ -107,9 +97,30 @@ export default function ChatDetail(props) {
 	}, [id, listRoom, roomSetupPhase]);
 
 	useEffect(() => {
-		fetchListMsg();
+		const r = () => {
+			const arr = [...roomMsg];
+			const q = query(
+				collection(firestore, 'messages'),
+				where('conversationId', '==', id),
+				orderBy('timestamp', 'asc'),
+				limit(100)
+			);
+			onSnapshot(q, snapshot => {
+				snapshot.docChanges().forEach(change => {
+					const msg = {
+						_id: change.doc.id,
+						...change.doc.data(),
+					};
+					pushNewMsg(msg);
+				});
+			});
+		};
+		r();
 	}, [room]);
 
+	useEffect(() => {
+		scrollToBottom();
+	}, [roomMsg]);
 	return (
 		<div className={`${styles.roomWrapper}`}>
 			<div className={`${styles.roomHeader}`}>
@@ -123,7 +134,9 @@ export default function ChatDetail(props) {
 				</div>
 			</div>
 			<div className={`${styles.roomBody}`}>
-				<div className={`${styles.msgContainer}`}>{renderListMsg()}</div>
+				<div className={`${styles.msgContainer} mod-webkit-scroll-m1 `} id='msgContainer'>
+					{renderListMsg()}
+				</div>
 				<div className={`${styles.typingContainer}`}>
 					<textarea
 						id='inAppEditor'

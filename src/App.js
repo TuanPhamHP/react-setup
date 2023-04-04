@@ -44,8 +44,12 @@ function App() {
 		const querySnapshot = await getDocs(q);
 
 		querySnapshot.forEach(doc => {
-			ar.push(doc.data());
+			ar.push({
+				rid: doc.id,
+				...doc.data(),
+			});
 		});
+		console.log(ar);
 		dispatch(setRoomSetupPhase(1));
 		dispatch(setListRoom(ar));
 	};
