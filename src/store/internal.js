@@ -26,6 +26,14 @@ export const internalSlice = createSlice({
 		setListRoom: (state, action) => {
 			state.listRoom = action.payload;
 		},
+		updateRoom: (state, action) => {
+			const idx = state.listRoom.findIndex(o => o.conversationId === action.payload.id);
+			if (idx === -1) {
+				state.listRoom.push(action.payload);
+			} else {
+				state.listRoom.splice(idx, 1, action.payload);
+			}
+		},
 		setFilterRoomByRead: (state, action) => {
 			state.filterRoomByRead = action.payload;
 		},
@@ -38,8 +46,15 @@ export const internalSlice = createSlice({
 		},
 	},
 });
-export const { setCurrentRoomMsg, setListRoom, pushMsg, setRoomReadAt, setFilterRoomByRead, setRoomSetupPhase } =
-	internalSlice.actions;
+export const {
+	setCurrentRoomMsg,
+	pushMsg,
+	setListRoom,
+	updateRoom,
+	setRoomReadAt,
+	setFilterRoomByRead,
+	setRoomSetupPhase,
+} = internalSlice.actions;
 
 export const selectInternal = state => state.internal;
 

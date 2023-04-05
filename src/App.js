@@ -8,7 +8,7 @@ import LayoutStyles from './assets/styles/Layout.module.scss';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser, selectUser } from './store/userAuth';
-import { setListRoom, setRoomSetupPhase } from './store/internal';
+
 import api from './services/index';
 
 // Route & Pages
@@ -29,38 +29,16 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { useEffect } from 'react';
-
-// firebase
-import { getDocs, collection, query, where, onSnapshot } from '@firebase/firestore';
-import firestore from './plugins/firebase_setup';
+import { useEffect, useState } from 'react';
 
 function App() {
 	const authUser = useSelector(selectUser);
-	const dispatch = useDispatch();
-	const fetchLm = async () => {
-		const ar = [];
-		const q = query(collection(firestore, 'conversations'));
-		const querySnapshot = await getDocs(q);
 
-		querySnapshot.forEach(doc => {
-			ar.push({
-				rid: doc.id,
-				...doc.data(),
-			});
-		});
-		console.log(ar);
-		dispatch(setRoomSetupPhase(1));
-		dispatch(setListRoom(ar));
-	};
 	useEffect(() => {
 		if (authUser.user) {
 		}
 	}, [authUser]);
-	useEffect(() => {
-		onSnapshot(collection(firestore, 'conversations'), snapshot => {});
-		fetchLm();
-	}, []);
+
 	const ProtectedRoute = ({ expectedPath, redirectPath = '/login', children }) => {
 		const currentToken = getCookie('token', true) || getSession('token', true);
 		const dispatch = useDispatch();

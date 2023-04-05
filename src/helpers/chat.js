@@ -71,6 +71,20 @@ const sortMessages = messages => {
 		} else return 0;
 	});
 };
+
+export const sortRoom = room => {
+	return room.sort((m1, m2) => {
+		let time1 = m1.last_message?.timestamp || 0;
+		let time2 = m2.last_message?.timestamp || 0;
+
+		if (new Date(time1) < new Date(time2)) {
+			return 1;
+		} else if (new Date(time1) > new Date(time2)) {
+			return -1;
+		} else return 0;
+	});
+};
+
 export const splitMessages = messages => {
 	const distance = 60 * 3; // 3'
 	let currentDay = '';

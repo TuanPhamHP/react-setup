@@ -133,7 +133,7 @@ export default function ChatDetail(props) {
 						<Avatar alt={'User avatar'} src={room.id ? room.listUser[0]?.avatar : ''} sx={{ width: 38, height: 38 }} />
 					</div>
 					<div>
-						<span className={`${styles.roomName}`}>{room.recipientId}</span>
+						<span className={`${styles.roomName}`}>{room.conversationId}</span>
 					</div>
 				</div>
 			</div>
