@@ -122,6 +122,7 @@ function App() {
 								}
 								errorElement=<Error />
 							/>
+
 							<Route
 								path='/chat/:id'
 								element={
