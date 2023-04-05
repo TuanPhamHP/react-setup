@@ -23,6 +23,7 @@ export default function ChatDetail(props) {
 
 	const internal = useSelector(selectInternal);
 	const listRoom = internal.listRoom;
+	const userId = internal.userId;
 	const roomSetupPhase = internal.roomSetupPhase;
 	const scrollToBottom = () => {
 		try {
@@ -63,7 +64,10 @@ export default function ChatDetail(props) {
 	const renderListMsg = () => {
 		return roomMsg.map(msg => {
 			return (
-				<div key={msg._id} className={`${styles.eachMsg} ${msg.isMe ? styles.myMsg : styles.otherMsg}`}>
+				<div
+					key={msg._id}
+					className={`${styles.eachMsg} ${+msg.senderId === +userId ? styles.myMsg : styles.otherMsg}`}
+				>
 					<div className={`${styles.bodyMsg}`}>
 						<pre className={`${styles.textContent}`}>{msg.text}</pre>
 						<span className={`${styles.msgTime}`}>{getLmTime(msg.timestamp)}</span>

@@ -7,6 +7,7 @@ export const internalSlice = createSlice({
 		listAlStyles: [],
 		listAlSystems: [],
 		token: '',
+		userId: 117562048883023, // hardcode
 		filterRoomByRead: 0, // 0 all, 1 unread
 		listRoom: [],
 		roomMsg: [],
